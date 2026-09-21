@@ -38,14 +38,14 @@ const shapes = {
     fore: 'M3,-8 C16,-42 58,-74 106,-66 C112,-46 96,-14 62,0 C40,8 16,6 3,0 Z',
     hind: 'M3,-2 C30,-8 68,0 78,26 C84,50 60,70 36,64 C16,58 6,30 3,4 Z',
   },
+  // Papilio con colas (Heraclides): ala delantera alargada y colas en forma de cuchara.
+  tailedSwallowtail: {
+    fore: 'M3,-8 C18,-46 62,-82 110,-76 C107,-52 92,-24 68,-4 C46,4 18,6 3,0 Z',
+    hind: 'M3,-2 C30,-8 64,-4 76,14 C80,20 76,24 79,30 C80,37 72,38 72,45 C70,51 63,50 61,56 L63,74 C64,81 56,83 55,77 L51,60 C45,64 40,60 34,62 C20,58 6,32 3,4 Z',
+  },
   swallowtail: {
     fore: 'M3,-8 C18,-46 60,-78 104,-72 C108,-48 96,-18 64,-2 C42,6 16,6 3,0 Z',
     hind: 'M3,-2 C30,-8 64,-2 76,20 C80,28 75,32 79,39 C80,46 71,47 71,55 C67,61 60,58 55,64 C48,69 43,62 37,64 C20,60 6,32 3,4 Z',
-  },
-  // Azufrada (Phoebis): ala delantera con la punta aguda y el borde externo casi recto.
-  sulphur: {
-    fore: 'M3,-8 C16,-44 56,-70 98,-68 C96,-48 88,-22 66,-3 C44,6 16,6 3,0 Z',
-    hind: 'M3,-2 C28,-8 62,-4 75,20 C81,42 60,64 36,60 C16,56 6,30 3,4 Z',
   },
   pierid: {
     fore: 'M3,-8 C14,-44 50,-68 90,-60 C99,-44 92,-16 64,-2 C42,6 16,6 3,0 Z',
@@ -71,32 +71,49 @@ const eyespot = (x: number, y: number, r: number, ring: string, pupil: string) =
 const line = (d: string, stroke: string, width: number) =>
   `<path d="${d}" fill="none" stroke="${stroke}" stroke-width="${width}" stroke-linecap="round" stroke-linejoin="round"/>`;
 
+// Banda de segmentos rectangulares entre dos puntos, separados por una línea fina del color de fondo
+// (como las venas que cortan la banda en los papiliónidos). El ancho pasa de widthStart a widthEnd.
+const band = (from: [number, number], to: [number, number], count: number, widthStart: number, widthEnd: number, fill: string) => {
+  const [dx, dy] = [to[0] - from[0], to[1] - from[1]];
+  const step = Math.hypot(dx, dy) / count;
+  const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
+  let segments = '';
+  for (let i = 0; i < count; i++) {
+    const t = (i + 0.5) / count;
+    const width = widthStart + (widthEnd - widthStart) * t;
+    const length = step - 1.1;
+    const [cx, cy] = [from[0] + dx * t, from[1] + dy * t];
+    segments += `<rect x="${(-length / 2).toFixed(1)}" y="${(-width / 2).toFixed(1)}" width="${length.toFixed(1)}" height="${width.toFixed(1)}" rx="2" fill="${fill}" transform="translate(${cx.toFixed(1)} ${cy.toFixed(1)}) rotate(${angle.toFixed(1)})"/>`;
+  }
+  return segments;
+};
+
 const foreMarginDots: [number, number][] = [[102, -60], [105, -50], [103, -40], [98, -30], [91, -20], [82, -11], [71, -5]];
 const hindMarginDots: [number, number][] = [[76, 24], [79, 35], [77, 46], [70, 55], [60, 61], [49, 63], [38, 60]];
 const ladyApex = 'M58,-72 L112,-72 L112,-30 L80,-34 C70,-40 62,-52 58,-72 Z';
 
 export const butterflyArt: Record<string, ButterflyArt> = {
-  // Hembra de Phoebis sennae: amarillo limón liso, una mancha hueca en el ala delantera
-  // y marcas negras en el borde. El macho es igual pero sin manchas.
+  // Heraclides thoas: negra con una banda diagonal de manchas amarillas que cruza las cuatro alas,
+  // medialunas amarillas cerca del borde y colas con el centro amarillo.
   'limonera-grande': {
-    shape: shapes.sulphur,
-    fore: '#fbe234',
-    hind: '#fde957',
-    margin: '#e2b50c',
-    marginWidth: 1.4,
-    veins: '#e9c526',
-    veinWidth: 0.6,
-    body: '#9a8a3a',
-    antennae: '#c75a6e',
+    shape: shapes.tailedSwallowtail,
+    fore: '#1c1814',
+    hind: '#1a1612',
+    margin: '#0f0d0b',
+    marginWidth: 3,
+    veins: '#2c2723',
+    veinWidth: 0.9,
+    body: '#14110f',
     forePattern:
-      blob(26, -20, 22, 11, -38, 'rgb(255 255 255 / 0.22)') +
-      `<rect x="44" y="-38" width="9" height="8" rx="3" fill="none" stroke="#2f2412" stroke-width="2.4" transform="rotate(-24 48.5 -34)"/>` +
-      [[96, -62, -70], [95, -52, -60], [92, -41, -50], [87, -30, -40], [80, -20, -32], [72, -11, -26]]
-        .map(([x, y, a]) => `<path d="M0,-3 L7,0 L0,3 Z" fill="#2f2412" transform="translate(${x} ${y}) rotate(${a + 180})"/>`)
-        .join(''),
+      // Banda diagonal desde cerca de la punta hasta el cuerpo, cada vez más ancha.
+      band([88, -66], [8, -4], 8, 6.5, 16, '#f5cf2e') +
+      dots([[101, -66], [100, -55], [95, -43], [88, -32], [80, -22], [70, -13]], 1.9, '#f5cf2e'),
     hindPattern:
-      blob(22, 16, 20, 11, 40, 'rgb(255 255 255 / 0.22)') +
-      dots([[76, 28], [75, 40], [69, 51], [58, 59]], 1.7, '#2f2412'),
+      // En el ala trasera la banda sigue la línea del ala delantera: cruza horizontal por la parte de arriba.
+      band([6, 5], [72, 22], 6, 16, 9, '#f5cf2e') +
+      blob(70, 34, 4.2, 2, 95, '#f5cf2e') + blob(64, 45, 4, 2, 120, '#f5cf2e') +
+      blob(54, 54, 3.8, 1.9, 145, '#f5cf2e') + blob(43, 58, 3.4, 1.8, 168, '#f5cf2e') + blob(33, 57, 3, 1.6, 185, '#f5cf2e') +
+      blob(59, 70, 1.6, 4.6, -8, '#f5cf2e'),
   },
   'bordes-de-oro': {
     shape: shapes.swallowtail,

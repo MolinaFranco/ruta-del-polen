@@ -82,7 +82,10 @@ Servir archivos estáticos no consume la cuota de requests del plan gratuito. Al
 
 El contenido botánico y entomológico es orientativo y se reunió de fuentes públicas: fichas de [Nativas (La Nación)](https://nativas.lanacion.com.ar), [Sistema de Información de Biodiversidad de Parques Nacionales](https://sib.gob.ar), [ArgentiNat](https://www.argentinat.org), Reserva Ecológica Costanera Sur, Proyecto Panambí, Jardín Botánico de Buenos Aires, Herbotecnia, Flora Bonaerense, Wikipedia y trabajos del CONICET y la UNS sobre germinación de *Sphaeralcea bonariensis*. La ubicación de los CPC proviene de [OpenStreetMap](https://www.openstreetmap.org/copyright) y de la Municipalidad de Córdoba.
 
-Nota: la "Dama pintada" figura como *Vanessa braziliensis*, que es la especie presente en Córdoba. *Vanessa cardui*, con la que suele confundirse, no habita Sudamérica.
+Notas sobre las especies:
+
+- La **Limonera grande** es *Heraclides thoas*, la mariposa negra con una banda amarilla que en Argentina se conoce con ese nombre. Sus orugas comen hojas de cítricos (de ahí "limonera"), ruda y árboles nativos del género *Zanthoxylum*, por eso su planta en el sitio es el limonero. El listado original la asociaba a *Phoebis sennae* y al sen del campo, que corresponden a otra mariposa, la Azufrada común.
+- La "Dama pintada" figura como *Vanessa braziliensis*, que es la especie presente en Córdoba. *Vanessa cardui*, con la que suele confundirse, no habita Sudamérica.
 
 ## Licencia
 

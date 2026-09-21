@@ -65,6 +65,48 @@ function mburucuya() {
 // Aristolochia fimbriata: tallos rastreros, hojas acorazonadas con nervaduras plateadas y flores
 // que nacen en las axilas de las hojas. La flor parece un patito: la base inflada es el cuerpo,
 // el tubo curvo es el cuello y el disco con flecos es la cabeza.
+// Limonero: tronco corto, ramas que abren una copa redonda de hojas lustrosas,
+// limones que cuelgan de las ramas y algunos azahares.
+function limonero() {
+  const trunkTop: [number, number] = [100, 136];
+  let drawing = `<path d="M100,214 Q97,176 ${trunkTop[0]},${trunkTop[1]}" fill="none" stroke="#7a5a3c" stroke-width="8" stroke-linecap="round"/>`;
+  const branches: Curve[] = [
+    { start: trunkTop, control: [80, 124], end: [52, 100] },
+    { start: trunkTop, control: [120, 122], end: [148, 96] },
+    { start: trunkTop, control: [88, 104], end: [74, 66] },
+    { start: trunkTop, control: [114, 102], end: [128, 62] },
+    { start: trunkTop, control: [100, 96], end: [100, 46] },
+  ];
+  const leafColors: [string, string][] = [['#2f6b34', '#1f4f26'], ['#3f7e3a', '#2a5f2c']];
+  let front = '';
+  branches.forEach((curve, i) => {
+    drawing += stem(curve, 3.4, '#6b4a2c');
+    [0.4, 0.58, 0.76].forEach((t, k) => {
+      const [x, y] = pointOn(curve, t);
+      const [color, shade] = leafColors[(i + k) % 2];
+      drawing += leaf(x, y, angleOn(curve, t) + (k % 2 ? 60 : -60), 20, 7, color, shade, 'ovate');
+    });
+    // Roseta de hojas en la punta de cada rama.
+    const [ex, ey] = curve.end;
+    for (let k = 0; k < 7; k++) {
+      const [color, shade] = leafColors[k % 2];
+      drawing += leaf(ex, ey, angleOn(curve, 1) - 105 + k * 35, 21, 7.5, color, shade, 'ovate');
+    }
+    // Limones colgando de las ramas laterales, con su cabito.
+    if (i < 4) {
+      const [lx, ly] = pointOn(curve, 0.66);
+      const fruit: [number, number] = [lx + (i % 2 ? 4 : -4), ly + 16];
+      front += twig([lx, ly], [fruit[0], fruit[1] - 8], 1.6, '#6b4a2c', i % 2 ? -0.2 : 0.2);
+      front += `<ellipse cx="${fruit[0]}" cy="${fruit[1]}" rx="7" ry="9" fill="#f6d23a"/><path d="M${fruit[0]},${fruit[1] - 9} A7,9 0 0 1 ${fruit[0]},${fruit[1] + 9} Z" fill="#e8bd1f"/><circle cx="${fruit[0]}" cy="${fruit[1] + 9.5}" r="1.4" fill="#e8bd1f"/><ellipse cx="${fruit[0] - 2.5}" cy="${fruit[1] - 3}" rx="1.8" ry="3" fill="rgb(255 255 255 / 0.45)"/>`;
+    }
+  });
+  // Azahares sobre las puntas de las ramas del centro.
+  [branches[2].end, branches[4].end, branches[3].end].forEach(([x, y], k) => {
+    front += petalFlower(x + (k - 1) * 3, y - 3, 6.5, 5, '#ffffff', '#f3ecd6', '#f2c230', k * 30);
+  });
+  return drawing + front;
+}
+
 function patito() {
   const runners: Curve[] = [
     { start: [BASE_X, BASE_Y], control: [64, 196], end: [22, 196] },
@@ -198,23 +240,6 @@ function carqueja() {
 }
 
 const uprightPlants: Record<string, () => string> = {
-  'sen-del-campo': () =>
-    upright({
-      stems: 5, height: 178, spread: 70, stemWidth: 3, stemColor: '#5a4630', leavesPerStem: 4,
-      drawLeaf: (x, y, angle, scale) => pinnateLeaf(x, y, angle, 34 * scale, 4, green.mid, green.dark),
-      drawTop: (x, y, angle, i) => {
-        const nodeA = backAlong(x, y, angle, 9);
-        const nodeB = backAlong(x, y, angle, 15);
-        const flowerA: [number, number] = [nodeA[0] - 12, nodeA[1] + 2];
-        const flowerB: [number, number] = [nodeB[0] + 12, nodeB[1] + 1];
-        return (
-          twig(nodeA, flowerA, 1.4, '#5a4630') + twig(nodeB, flowerB, 1.4, '#5a4630', -0.25) +
-          petalFlower(flowerA[0], flowerA[1], 8, 5, '#f6c435', '#eeb21e', '#c9801a', 30) +
-          petalFlower(flowerB[0], flowerB[1], 8, 5, '#f6c435', '#eeb21e', '#c9801a', 10) +
-          petalFlower(x, y, 11, 5, '#f6c435', '#eeb21e', '#c9801a', i * 20)
-        );
-      },
-    }),
   'bandera-espanola': () =>
     upright({
       stems: 4, height: 170, spread: 52, stemWidth: 2.6, stemColor: green.dark, leavesPerStem: 7,
@@ -331,7 +356,7 @@ const uprightPlants: Record<string, () => string> = {
     }),
 };
 
-const specialPlants: Record<string, () => string> = { mburucuya, patito, violeta, 'margarita-punzo': margaritaPunzo, carqueja };
+const specialPlants: Record<string, () => string> = { limonero, mburucuya, patito, violeta, 'margarita-punzo': margaritaPunzo, carqueja };
 
 export function drawPlant(id: string): string {
   const draw = uprightPlants[id] ?? specialPlants[id];

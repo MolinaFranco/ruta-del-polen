@@ -20,20 +20,20 @@ export const butterflies: Butterfly[] = [
   {
     id: 'limonera-grande',
     commonName: 'Limonera grande',
-    scientificName: 'Phoebis sennae',
-    family: 'Piéridos',
-    wingspan: '5 a 6,5 cm',
-    season: 'Primavera a otoño',
-    summary: 'Un relámpago amarillo limón que cruza la ciudad volando alto y rápido.',
+    scientificName: 'Heraclides thoas',
+    family: 'Papiliónidos',
+    wingspan: '8 a 11 cm',
+    season: 'Primavera a otoño, en varias generaciones',
+    summary: 'Una de las más grandes de la ciudad: negra, cruzada por una banda amarilla y con dos colas en las alas traseras.',
     appearance:
-      'El macho es amarillo limón, liso y brillante. La hembra puede ser amarilla o blanquecina, con puntitos oscuros en el borde y una mancha en el ala delantera. Con las alas cerradas parece una hoja amarillenta.',
+      'Alas negras cruzadas en diagonal por una ancha banda de manchas amarillas, que va de cerca de la punta del ala delantera hasta el centro del ala trasera. Cerca del borde tiene una hilera de medialunas amarillas, y las alas traseras terminan en dos colas en forma de cuchara con el centro amarillo. Por debajo es casi toda amarilla.',
     caterpillar:
-      'Verde amarillenta, con una franja lateral amarilla y puntitos oscuros. Las que comen flores del sen se vuelven amarillas. La crisálida es curva y puntiaguda, verde o rosada.',
+      'Imita un excremento de pájaro: marrón oliva con manchas blancas y aspecto húmedo. Si se la molesta, asoma detrás de la cabeza unos "cuernitos" anaranjados con olor fuerte, que son inofensivos. La crisálida parece una ramita seca.',
     behavior:
-      'Es gran voladora y migradora. Prefiere flores tubulares de colores cálidos, a las que llega con su larga espiritrompa.',
-    hostPlantId: 'sen-del-campo',
-    otherHostPlants: 'Otras Senna nativas, como la pichana (Senna aphylla).',
-    favoriteNectarIds: ['lantana', 'salvia-azul', 'chinita'],
+      'Vuelo fuerte y veloz. Liba sin dejar de aletear y los machos se juntan a tomar agua en el barro húmedo. Por sus orugas en los naranjos, en el campo la llaman "perro de los naranjos".',
+    hostPlantId: 'limonero',
+    otherHostPlants: 'Naranjo, mandarino y pomelo; la ruda, que se cultiva fácil en maceta; y árboles nativos del género Zanthoxylum, como el coco de las sierras de Córdoba.',
+    favoriteNectarIds: ['lantana', 'salvia-azul', 'verbena'],
   },
   {
     id: 'bordes-de-oro',
