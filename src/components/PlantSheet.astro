@@ -1,16 +1,25 @@
 ---
+import ButterflyArt from './ButterflyArt.astro';
 import PlantArt from './PlantArt.astro';
 import PollinatorIcon from './PollinatorIcon.astro';
+import { butterflies } from '../data/butterflies';
 import { balconyFitLabels } from '../data/plants';
 import type { GrowingGuide, Plant } from '../data/plants';
 import { pollinators } from '../data/pollinators';
+import { url } from '../utils/url';
 
 interface Props {
   plant: Plant;
+  // Desde qué catálogo se muestra la ficha: define el rótulo de arriba del nombre.
+  role: 'host' | 'nectar';
   headingLevel?: 'h1' | 'h2';
 }
 
-const { plant, headingLevel: Heading = 'h2' } = Astro.props;
+const { plant, role, headingLevel: Heading = 'h2' } = Astro.props;
+// Mariposas cuyas orugas se crían en esta planta (el cedrón del monte, por ejemplo, cría a dos).
+// En la ficha de una mariposa solo se muestra si la planta cría a más de una: si no, repetiría lo que ya dice la página.
+const raisedButterflies = butterflies.filter((butterfly) => butterfly.hostPlantId === plant.id);
+const showRaised = raisedButterflies.length > (role === 'host' ? 1 : 0);
 
 const needs: { key: keyof GrowingGuide; gardenLabel: string; balconyLabel: string; icon: string }[] = [
   { key: 'depth', gardenLabel: 'Profundidad de terreno', balconyLabel: 'Profundidad de maceta', icon: 'M4,4 L20,4 M12,4 L12,20 M7,15 L12,20 L17,15' },
@@ -30,7 +39,7 @@ const needs: { key: keyof GrowingGuide; gardenLabel: string; balconyLabel: strin
   </div>
 
   <div class="sheet__body">
-    <p class="eyebrow">{plant.kind === 'host' ? 'Planta nutricia' : 'Planta nectarífera'}</p>
+    <p class="eyebrow">{role === 'host' ? 'Planta nutricia' : 'Planta nectarífera'}</p>
     <Heading class="sheet__name">{plant.commonName}</Heading>
     <p class="sheet__latin"><em>{plant.scientificName}</em> · {plant.family}</p>
     <p class="sheet__summary">{plant.summary}</p>
@@ -55,6 +64,26 @@ const needs: { key: keyof GrowingGuide; gardenLabel: string; balconyLabel: strin
       </ul>
       <p>{plant.pollinatorNote}</p>
     </div>
+
+    {
+      showRaised && (
+        <div class="sheet__raises">
+          <h3>Sus hojas crían a</h3>
+          <ul>
+            {raisedButterflies.map((butterfly) => (
+              <li>
+                <a href={url(`/mariposas/${butterfly.id}/`)}>
+                  <span class="sheet__raises-art">
+                    <ButterflyArt id={butterfly.id} uid={`raises-${plant.id}`} />
+                  </span>
+                  {butterfly.commonName}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    }
 
     <div class="sheet__guide">
       <div class="sheet__guide-head">
@@ -229,6 +258,41 @@ const needs: { key: keyof GrowingGuide; gardenLabel: string; balconyLabel: strin
 
   .sheet__pollinators p {
     color: var(--ink-soft);
+  }
+
+  .sheet__raises {
+    margin-top: 2rem;
+  }
+
+  .sheet__raises ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0.8rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sheet__raises a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.25rem 1rem 0.25rem 0.4rem;
+    border-radius: 999px;
+    background: var(--green-100);
+    color: var(--green-900);
+    font: 700 0.95rem var(--font-sans);
+    text-decoration: none;
+    transition: background 0.2s;
+  }
+
+  .sheet__raises a:hover {
+    background: var(--green-300);
+  }
+
+  .sheet__raises-art {
+    width: 2.6rem;
   }
 
   .sheet__guide {

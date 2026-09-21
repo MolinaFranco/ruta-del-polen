@@ -179,19 +179,29 @@ export const butterflyArt: Record<string, ButterflyArt> = {
       line('M10,20 L24,14 L36,22 L48,16 L60,26', '#3a2414', 1.8) +
       dots([[62, 22], [66, 33], [63, 44], [54, 52], [43, 56], [31, 53]], 2.3, '#3a2414'),
   },
+  // Anartia jatrophae: blanco nacarado con líneas pardas, borde anaranjado festoneado,
+  // un ocelo negro en el ala delantera y dos en la trasera.
   cenicienta: {
-    shape: shapes.pierid,
-    fore: '#8f9be3',
-    hind: '#a3adea',
-    margin: '#4b4a72',
-    marginWidth: 4,
-    veins: '#6f78c4',
-    veinWidth: 0.8,
-    body: '#4b4a72',
-    forePattern: blob(24, -18, 22, 12, -40, 'rgb(255 255 255 / 0.28)'),
+    shape: shapes.nymphalid,
+    fore: '#f6f1e4',
+    hind: '#f4eedf',
+    margin: '#e0a25a',
+    marginWidth: 6,
+    veins: '#d9ccb2',
+    veinWidth: 0.6,
+    body: '#6b5a44',
+    forePattern:
+      line('M28,-50 C40,-40 46,-26 44,-8', '#b99a72', 1.6) +
+      line('M62,-66 C66,-48 70,-30 60,-6', '#b99a72', 1.6) +
+      line('M84,-60 C88,-46 84,-28 74,-12', '#c98a4a', 1.4) +
+      blob(18, -10, 8, 4, -40, '#e8c28e') +
+      eyespot(56, -24, 4.4, '#e0a25a', '#1f1813'),
     hindPattern:
-      blob(22, 18, 20, 12, 40, 'rgb(255 255 255 / 0.28)') + dot(60, 48, 3, INK) + dot(51, 56, 2.4, INK) +
-      dot(60, 48, 1, '#9fe0d8') + dot(51, 56, 0.8, '#9fe0d8'),
+      line('M20,8 C34,14 44,30 40,52', '#b99a72', 1.6) +
+      line('M44,4 C58,14 66,32 58,56', '#c98a4a', 1.4) +
+      blob(16, 14, 7, 4, 40, '#e8c28e') +
+      eyespot(50, 26, 4.6, '#e0a25a', '#1f1813') +
+      eyespot(40, 46, 3.8, '#e0a25a', '#1f1813'),
   },
   'cuatro-ojos': {
     shape: shapes.buckeye,

@@ -82,9 +82,12 @@ Servir archivos estáticos no consume la cuota de requests del plan gratuito. Al
 
 El contenido botánico y entomológico es orientativo y se reunió de fuentes públicas: fichas de [Nativas (La Nación)](https://nativas.lanacion.com.ar), [Sistema de Información de Biodiversidad de Parques Nacionales](https://sib.gob.ar), [ArgentiNat](https://www.argentinat.org), Reserva Ecológica Costanera Sur, Proyecto Panambí, Jardín Botánico de Buenos Aires, Herbotecnia, Flora Bonaerense, Wikipedia y trabajos del CONICET y la UNS sobre germinación de *Sphaeralcea bonariensis*. La ubicación de los CPC proviene de [OpenStreetMap](https://www.openstreetmap.org/copyright) y de la Municipalidad de Córdoba.
 
-Notas sobre las especies:
+Notas sobre las especies y sus plantas (revisadas con el grupo sobre el listado original):
 
-- La **Limonera grande** es *Heraclides thoas*, la mariposa negra con una banda amarilla que en Argentina se conoce con ese nombre. Sus orugas comen hojas de cítricos (de ahí "limonera"), ruda y árboles nativos del género *Zanthoxylum*, por eso su planta en el sitio es el limonero. El listado original la asociaba a *Phoebis sennae* y al sen del campo, que corresponden a otra mariposa, la Azufrada común.
+- La **Limonera grande** es *Heraclides thoas*, la mariposa negra con una banda amarilla que en Argentina se conoce con ese nombre. Sus orugas comen ruda, cítricos y árboles nativos del género *Zanthoxylum*; en el sitio su planta es la **ruda**, que se cultiva fácil en maceta. El listado original la asociaba a *Phoebis sennae* y al sen del campo, que corresponden a otra mariposa, la Azufrada común.
+- La **Cenicienta** es *Anartia jatrophae*, blanca con ocelos, que se cría en el **cedrón del monte** (*Aloysia gratissima*). El listado original la asociaba a *Leptotes cassius*, una mariposa azul distinta.
+- El cedrón del monte es a la vez planta nectarífera y nutricia de dos mariposas: la Cenicienta y la **Cuatro ojos**.
+- La **Monarca del sur** se cría en el **tasi** (*Araujia odorata*), la **Hortensia** en el **peine de mono** (*Amphilophium cynanchoides*) y la **Dama manchada** en la **malva blanca** (*Sphaeralcea bonariensis*), las tres nativas.
 - La "Dama pintada" figura como *Vanessa braziliensis*, que es la especie presente en Córdoba. *Vanessa cardui*, con la que suele confundirse, no habita Sudamérica.
 
 ## Licencia

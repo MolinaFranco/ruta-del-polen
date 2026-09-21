@@ -26,7 +26,7 @@ const { plant, previous, next } = Astro.props;
   <section class="plant-page">
     <div class="container">
       <a class="plant-page__back" href={url('/nectariferas/')}><span aria-hidden="true">←</span> Todas las nectaríferas</a>
-      <PlantSheet plant={plant} headingLevel="h1" />
+      <PlantSheet plant={plant} role="nectar" headingLevel="h1" />
     </div>
   </section>
 

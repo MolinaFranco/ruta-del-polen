@@ -68,7 +68,7 @@ const nectarFavorites = butterfly.favoriteNectarIds.map(getPlant);
   <section class="host">
     <div class="container">
       <p class="host__lead" data-reveal>Para que la {butterfly.commonName} críe en tu casa, necesitás esta planta:</p>
-      <PlantSheet plant={hostPlant} />
+      <PlantSheet plant={hostPlant} role="host" />
       <p class="host__others"><strong>También cría en:</strong> {butterfly.otherHostPlants}</p>
     </div>
   </section>

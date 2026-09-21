@@ -62,51 +62,121 @@ function mburucuya() {
   return drawing;
 }
 
-// Aristolochia fimbriata: tallos rastreros, hojas acorazonadas con nervaduras plateadas y flores
-// que nacen en las axilas de las hojas. La flor parece un patito: la base inflada es el cuerpo,
-// el tubo curvo es el cuello y el disco con flecos es la cabeza.
-// Limonero: tronco corto, ramas que abren una copa redonda de hojas lustrosas,
-// limones que cuelgan de las ramas y algunos azahares.
-function limonero() {
-  const trunkTop: [number, number] = [100, 136];
-  let drawing = `<path d="M100,214 Q97,176 ${trunkTop[0]},${trunkTop[1]}" fill="none" stroke="#7a5a3c" stroke-width="8" stroke-linecap="round"/>`;
-  const branches: Curve[] = [
-    { start: trunkTop, control: [80, 124], end: [52, 100] },
-    { start: trunkTop, control: [120, 122], end: [148, 96] },
-    { start: trunkTop, control: [88, 104], end: [74, 66] },
-    { start: trunkTop, control: [114, 102], end: [128, 62] },
-    { start: trunkTop, control: [100, 96], end: [100, 46] },
+// Ruda: subarbusto de hojas divididas color verde azulado y ramilletes de florcitas amarillas.
+function ruda() {
+  const glaucous = { color: '#8fb8a3', shade: '#6a937f' };
+  return upright({
+    stems: 7, height: 148, spread: 60, stemWidth: 2.2, stemColor: '#6a937f', leavesPerStem: 5, leafEnd: 0.8,
+    drawLeaf: (x, y, angle, scale) => pinnateLeaf(x, y, angle, 26 * scale, 3, glaucous.color, glaucous.shade),
+    drawTop: (x, y, angle, i) => {
+      let flowers = '';
+      const spots: [number, number][] = [[-10, -4], [9, -6], [-2, -13]];
+      spots.forEach(([dx, dy], k) => {
+        const end: [number, number] = [x + dx, y + dy];
+        flowers += twig([x, y], end, 1.2, glaucous.shade, k % 2 ? -0.2 : 0.2) + petalFlower(end[0], end[1], 5.5, 4, '#ecd334', '#d9bd1f', '#9ab04a', (i + k) * 20);
+      });
+      return flowers + petalFlower(x, y, 5.5, 4, '#ecd334', '#d9bd1f', '#9ab04a', angle);
+    },
+  });
+}
+
+// Tasi: enredadera que se enrosca en una caña, con hojas opuestas, ramilletes de flores blancas
+// y su fruto grande, verde y con forma de pera.
+function tasi() {
+  let drawing = `<path d="M100,214 L100,22" stroke="#c9a36a" stroke-width="4" stroke-linecap="round"/>`;
+  [176, 132, 88, 48].forEach((y) => (drawing += `<path d="M97,${y} L103,${y}" stroke="#a88450" stroke-width="2.4" stroke-linecap="round"/>`));
+  const vine: Curve[] = [
+    { start: [100, 214], control: [76, 192], end: [100, 172] },
+    { start: [100, 172], control: [124, 152], end: [100, 132] },
+    { start: [100, 132], control: [76, 112], end: [100, 92] },
+    { start: [100, 92], control: [124, 72], end: [100, 54] },
+    { start: [100, 54], control: [80, 40], end: [104, 26] },
   ];
-  const leafColors: [string, string][] = [['#2f6b34', '#1f4f26'], ['#3f7e3a', '#2a5f2c']];
+  vine.forEach((curve) => (drawing += stem(curve, 2.6, green.dark)));
+  const leafColor = { color: '#7fa58a', shade: '#5d846a' };
   let front = '';
-  branches.forEach((curve, i) => {
-    drawing += stem(curve, 3.4, '#6b4a2c');
-    [0.4, 0.58, 0.76].forEach((t, k) => {
-      const [x, y] = pointOn(curve, t);
-      const [color, shade] = leafColors[(i + k) % 2];
-      drawing += leaf(x, y, angleOn(curve, t) + (k % 2 ? 60 : -60), 20, 7, color, shade, 'ovate');
-    });
-    // Roseta de hojas en la punta de cada rama.
-    const [ex, ey] = curve.end;
-    for (let k = 0; k < 7; k++) {
-      const [color, shade] = leafColors[k % 2];
-      drawing += leaf(ex, ey, angleOn(curve, 1) - 105 + k * 35, 21, 7.5, color, shade, 'ovate');
-    }
-    // Limones colgando de las ramas laterales, con su cabito.
-    if (i < 4) {
-      const [lx, ly] = pointOn(curve, 0.66);
-      const fruit: [number, number] = [lx + (i % 2 ? 4 : -4), ly + 16];
-      front += twig([lx, ly], [fruit[0], fruit[1] - 8], 1.6, '#6b4a2c', i % 2 ? -0.2 : 0.2);
-      front += `<ellipse cx="${fruit[0]}" cy="${fruit[1]}" rx="7" ry="9" fill="#f6d23a"/><path d="M${fruit[0]},${fruit[1] - 9} A7,9 0 0 1 ${fruit[0]},${fruit[1] + 9} Z" fill="#e8bd1f"/><circle cx="${fruit[0]}" cy="${fruit[1] + 9.5}" r="1.4" fill="#e8bd1f"/><ellipse cx="${fruit[0] - 2.5}" cy="${fruit[1] - 3}" rx="1.8" ry="3" fill="rgb(255 255 255 / 0.45)"/>`;
+  vine.forEach((curve, i) => {
+    const [x, y] = pointOn(curve, 0.5);
+    const along = angleOn(curve, 0.5);
+    // Hojas opuestas en cada nudo.
+    drawing += leaf(x, y, along - 70, 26 - i * 2, 7, leafColor.color, leafColor.shade) + leaf(x, y, along + 70, 26 - i * 2, 7, leafColor.color, leafColor.shade);
+    // Ramilletes de flores en los nudos 1 y 3.
+    if (i === 1 || i === 3) {
+      const side = i === 1 ? 1 : -1;
+      const center: [number, number] = [x + side * 22, y - 6];
+      front += twig([x, y], center, 1.4, green.dark, side * -0.2);
+      [[0, 0], [side * 8, 7], [side * -3, 10]].forEach(([dx, dy], k) => {
+        front += petalFlower(center[0] + dx, center[1] + dy, 7, 5, '#ffffff', '#efe6cf', '#e9c9a1', k * 36);
+      });
     }
   });
-  // Azahares sobre las puntas de las ramas del centro.
-  [branches[2].end, branches[4].end, branches[3].end].forEach(([x, y], k) => {
-    front += petalFlower(x + (k - 1) * 3, y - 3, 6.5, 5, '#ffffff', '#f3ecd6', '#f2c230', k * 30);
-  });
+  // Fruto colgando del nudo 2.
+  const [nx, ny] = pointOn(vine[2], 0.5);
+  const fruitTop: [number, number] = [nx - 20, ny + 12];
+  front += twig([nx, ny], fruitTop, 1.8, green.dark, 0.2);
+  const [fx, fy] = fruitTop;
+  front += `<path d="M${fx},${fy} C${fx - 7},${fy + 4} ${fx - 14},${fy + 16} ${fx - 12},${fy + 28} C${fx - 10},${fy + 38} ${fx + 10},${fy + 38} ${fx + 12},${fy + 28} C${fx + 14},${fy + 16} ${fx + 7},${fy + 4} ${fx},${fy} Z" fill="#9cc26f"/>`;
+  front += `<path d="M${fx},${fy} C${fx + 7},${fy + 4} ${fx + 14},${fy + 16} ${fx + 12},${fy + 28} C${fx + 10},${fy + 38} ${fx},${fy + 36} ${fx},${fy + 36} Z" fill="#7da655"/>`;
+  front += `<path d="M${fx - 5},${fy + 8} C${fx - 8},${fy + 18} ${fx - 7},${fy + 28} ${fx - 4},${fy + 34} M${fx + 4},${fy + 8} C${fx + 7},${fy + 18} ${fx + 6},${fy + 28} ${fx + 3},${fy + 34}" fill="none" stroke="#6b9446" stroke-width="1"/>`;
   return drawing + front;
 }
 
+// Peine de mono: enredadera leñosa que trepa por un alambrado, con hojas de dos folíolos,
+// zarcillos, trompetas blanco crema y el fruto erizado que le da el nombre.
+function peineDeMono() {
+  // Postes a 56 y 144: en el jardín son un alambrado; en la maceta quedan clavados en el borde, como un enrejado.
+  let drawing =
+    `<path d="M56,214 L56,64 M144,214 L144,64" stroke="#9a7a55" stroke-width="5" stroke-linecap="round"/>` +
+    `<path d="M56,82 L144,82 M56,140 L144,140" stroke="#8d8a80" stroke-width="1.4"/>`;
+  const vines: Curve[] = [
+    { start: [BASE_X, BASE_Y], control: [96, 170], end: [76, 140] },
+    { start: [76, 140], control: [66, 136], end: [58, 141] },
+    { start: [BASE_X, BASE_Y], control: [104, 170], end: [124, 140] },
+    { start: [124, 140], control: [134, 136], end: [142, 141] },
+    { start: [BASE_X, BASE_Y], control: [98, 130], end: [98, 82] },
+    { start: [98, 82], control: [78, 76], end: [58, 83] },
+    { start: [98, 82], control: [120, 76], end: [142, 83] },
+  ];
+  vines.forEach((curve) => (drawing += stem(curve, 2.6, '#5a4630')));
+  let front = '';
+  const nodes: [number, number, number][] = [];
+  vines.forEach((curve, i) => {
+    [0.35, 0.8].forEach((t, k) => {
+      const [x, y] = pointOn(curve, t);
+      const along = angleOn(curve, t);
+      const up = along - 90 * (i === 4 ? (k % 2 ? 1 : -1) : 1);
+      const rad = (up * Math.PI) / 180;
+      const [px, py] = [x + Math.cos(rad) * 7, y + Math.sin(rad) * 7];
+      // Hoja de dos folíolos sobre un pecíolo, más un zarcillo enrulado.
+      drawing += `<path d="M${x.toFixed(1)},${y.toFixed(1)} L${px.toFixed(1)},${py.toFixed(1)}" stroke="${green.dark}" stroke-width="1.4" stroke-linecap="round"/>`;
+      drawing += leaf(px, py, up - 34, 17, 7, green.mid, green.dark, 'heart') + leaf(px, py, up + 34, 17, 7, green.mid, green.dark, 'heart');
+      drawing += `<path d="M${px.toFixed(1)},${py.toFixed(1)} c${(Math.cos(rad) * 8).toFixed(1)},${(Math.sin(rad) * 8).toFixed(1)} 6,-2 3,3 c-2,3 -5,0 -3,-2" fill="none" stroke="${green.light}" stroke-width="1.2" stroke-linecap="round"/>`;
+      nodes.push([x, y, i]);
+    });
+  });
+  // Trompetas colgando de los tallos que corren por los alambres.
+  [nodes[3], nodes[7], nodes[11], nodes[13]].forEach(([x, y], k) => {
+    const tip: [number, number] = [x + (k % 2 ? 4 : -4), y + 8];
+    front += twig([x, y], tip, 1.3, green.dark, 0.1) + tubeFlower(tip[0], tip[1], 90 + (k % 2 ? -14 : 14), 28, '#f7efd2', '#e6d8a6', green.light);
+  });
+  // El fruto: una cápsula elíptica cubierta de cerdas, como un peine.
+  const [cx0, cy0] = nodes[9];
+  const capsule: [number, number] = [cx0 + 6, cy0 + 26];
+  front += twig([cx0, cy0], [capsule[0], capsule[1] - 15], 1.6, '#5a4630', -0.1);
+  let bristles = '';
+  for (let k = 0; k < 26; k++) {
+    const a = (k / 26) * Math.PI * 2;
+    const [bx, by] = [capsule[0] + Math.cos(a) * 7, capsule[1] + Math.sin(a) * 14];
+    const [ex, ey] = [capsule[0] + Math.cos(a) * 11, capsule[1] + Math.sin(a) * 18];
+    bristles += `<path d="M${bx.toFixed(1)},${by.toFixed(1)} L${ex.toFixed(1)},${ey.toFixed(1)}" stroke="#7a8a3c" stroke-width="1.2" stroke-linecap="round"/>`;
+  }
+  front += bristles + `<ellipse cx="${capsule[0]}" cy="${capsule[1]}" rx="8" ry="15" fill="#8faa4c"/><path d="M${capsule[0]},${capsule[1] - 15} A8,15 0 0 1 ${capsule[0]},${capsule[1] + 15} Z" fill="#76913a"/>`;
+  return drawing + front;
+}
+
+// Aristolochia fimbriata: tallos rastreros, hojas acorazonadas con nervaduras plateadas y flores
+// que nacen en las axilas de las hojas. La flor parece un patito: la base inflada es el cuerpo,
+// el tubo curvo es el cuello y el disco con flecos es la cabeza.
 function patito() {
   const runners: Curve[] = [
     { start: [BASE_X, BASE_Y], control: [64, 196], end: [22, 196] },
@@ -180,24 +250,6 @@ function patito() {
   return drawing;
 }
 
-function violeta() {
-  let drawing = '';
-  for (let i = 0; i < 11; i++) {
-    const t = i / 10;
-    const angle = -170 + t * 160;
-    const length = 46 + jitter(i) * 26;
-    const rad = (angle * Math.PI) / 180;
-    const x = BASE_X + Math.cos(rad) * length;
-    const y = BASE_Y + Math.sin(rad) * length * 0.95;
-    drawing += `<path d="M${BASE_X},${BASE_Y} Q${BASE_X + Math.cos(rad) * length * 0.3},${y - 10} ${x},${y}" fill="none" stroke="${green.light}" stroke-width="1.8"/>`;
-    drawing += leaf(x, y, angle + (i % 2 ? 25 : -25), 26, 11, i % 2 ? green.mid : green.light, green.dark, 'heart');
-  }
-  const violet = (x: number, y: number, r: number) =>
-    `<path d="M${BASE_X},${BASE_Y} Q${x + 4},${y + 40} ${x},${y + r}" fill="none" stroke="${green.light}" stroke-width="1.6"/>` +
-    petalFlower(x, y, r, 5, '#7b4fc0', '#5f379e', '#f6c435', -90) + circle(x, y + r * 0.3, r * 0.2, CREAM);
-  return drawing + violet(74, 120, 13) + violet(112, 104, 14) + violet(140, 134, 12) + violet(96, 146, 11);
-}
-
 function margaritaPunzo() {
   const runners: Curve[] = [
     { start: [BASE_X, BASE_Y], control: [60, 176], end: [26, 190] },
@@ -240,28 +292,6 @@ function carqueja() {
 }
 
 const uprightPlants: Record<string, () => string> = {
-  'bandera-espanola': () =>
-    upright({
-      stems: 4, height: 170, spread: 52, stemWidth: 2.6, stemColor: green.dark, leavesPerStem: 7,
-      drawLeaf: simpleLeaf(30, 5.5, green.mid, green.dark),
-      drawTop: (x, y) => cluster(x, y - 4, 16, 18, 3.4, '#d8322a', '#f6b62c'),
-    }),
-  'jazmin-del-cielo': () =>
-    upright({
-      stems: 6, height: 160, spread: 84, stemWidth: 2.2, stemColor: green.dark, leavesPerStem: 7,
-      drawLeaf: simpleLeaf(17, 5.5, green.light, green.mid, 'ovate'),
-      drawTop: (x, y, _angle, i) => {
-        let bunch = '';
-        [[0, 0], [-10, 6], [10, 5], [-3, -10], [7, -8]].forEach(([dx, dy], k) => (bunch += petalFlower(x + dx, y + dy, 7.5, 5, '#9cc4f2', '#7fadea', '#5b7fd1', (i + k) * 24)));
-        return bunch;
-      },
-    }),
-  ruellia: () =>
-    upright({
-      stems: 5, height: 160, spread: 58, stemWidth: 2.4, stemColor: '#5b4a6a', leavesPerStem: 6,
-      drawLeaf: simpleLeaf(36, 3.6, green.dark, '#1f4527', 'narrow'),
-      drawTop: (x, y, _angle, i) => petalFlower(x, y - 2, 14, 5, '#8e6bbf', '#7654aa', '#4d2f7a', i * 17) + circle(x, y - 2, 2, '#f3e2a0'),
-    }),
   malva: () =>
     upright({
       stems: 4, height: 168, spread: 50, stemWidth: 3, stemColor: green.dark, leavesPerStem: 4,
@@ -277,7 +307,7 @@ const uprightPlants: Record<string, () => string> = {
         return twig(node, second, 1.6, green.dark, i % 2 ? -0.25 : 0.25) + mallow(second[0], second[1], 10) + mallow(x, y, 13);
       },
     }),
-  malvavisco: () =>
+  'malva-blanca': () =>
     upright({
       stems: 5, height: 172, spread: 62, stemWidth: 2.8, stemColor: green.greyShade, leavesPerStem: 5,
       drawLeaf: (x, y, angle, scale) => palmateLeaf(x, y, angle, 20 * scale, 3, green.grey, green.greyShade, 'ovate'),
@@ -345,7 +375,7 @@ const uprightPlants: Record<string, () => string> = {
       drawLeaf: simpleLeaf(24, 7, green.light, green.mid, 'ovate'),
       drawTop: (x, y, _angle, i) => daisy(x, y - 2, 15 - (i % 2) * 2, 10, i % 2 ? '#e0432b' : '#f0622a', i % 2 ? '#c2301c' : '#d94a1c', '#f6c435'),
     }),
-  'azahar-del-monte': () =>
+  'cedron-del-monte': () =>
     upright({
       stems: 7, height: 180, spread: 82, stemWidth: 2.4, stemColor: '#8a7350', leavesPerStem: 8,
       drawLeaf: simpleLeaf(15, 4, green.light, green.mid, 'ovate'),
@@ -356,7 +386,7 @@ const uprightPlants: Record<string, () => string> = {
     }),
 };
 
-const specialPlants: Record<string, () => string> = { limonero, mburucuya, patito, violeta, 'margarita-punzo': margaritaPunzo, carqueja };
+const specialPlants: Record<string, () => string> = { ruda, tasi, 'peine-de-mono': peineDeMono, mburucuya, patito, 'margarita-punzo': margaritaPunzo, carqueja };
 
 export function drawPlant(id: string): string {
   const draw = uprightPlants[id] ?? specialPlants[id];
