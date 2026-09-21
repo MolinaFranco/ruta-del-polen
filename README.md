@@ -63,17 +63,20 @@ npm run preview   # sirve dist/ para revisar el build
 npm run check     # chequeo de tipos
 ```
 
-## Publicación gratuita en Cloudflare Pages
+## Publicación en Cloudflare (gratis)
 
-1. En el panel de Cloudflare: **Workers & Pages → Create → Pages → Connect to Git** y elegir este repositorio.
-2. Configuración del build:
-   - Framework preset: **Astro**
-   - Build command: `npm run build`
-   - Build output directory: `dist`
-   - Variable de entorno: `NODE_VERSION` = `22`
-3. **Save and Deploy.** Cada `git push` a `main` vuelve a publicar el sitio. La URL queda como `https://<proyecto>.pages.dev` y es la que se codifica en el QR de los tótems.
+El sitio está publicado en **https://ruta-del-polen.ruta-del-polen.workers.dev** como un Worker de archivos estáticos (el reemplazo actual de Cloudflare Pages). La configuración vive en `wrangler.jsonc`: sirve la carpeta `dist/` y usa `404.html` para las rutas que no existen.
 
-El plan gratuito de Pages no limita el ancho de banda ni la cantidad de visitas. Al ser archivos estáticos, el sitio también funciona en Netlify, Vercel o GitHub Pages sin cambios.
+Para publicar una versión nueva:
+
+```bash
+npx wrangler login   # solo la primera vez en cada máquina
+npm run deploy       # compila y sube dist/
+```
+
+Para que se publique solo con cada `git push`: en el panel de Cloudflare, **Workers & Pages → ruta-del-polen → Settings → Build → Connect** y elegir este repositorio, con build command `npm run build` y deploy command `npx wrangler deploy`.
+
+Servir archivos estáticos no consume la cuota de requests del plan gratuito. Al ser un sitio estático, también funciona en Netlify, Vercel o GitHub Pages sin cambios.
 
 ## Fuentes de la información
 

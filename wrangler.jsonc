@@ -1,0 +1,11 @@
+// Publicación en Cloudflare (Workers con archivos estáticos): sirve la carpeta dist/ tal cual.
+// Deploy: npm run deploy
+{
+  "name": "ruta-del-polen",
+  "compatibility_date": "2026-09-18",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "force-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
