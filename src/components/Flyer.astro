@@ -1,0 +1,29 @@
+---
+import ButterflyArt from './ButterflyArt.astro';
+
+interface Props {
+  id?: string;
+}
+
+const { id = 'monarca-del-sur' } = Astro.props;
+---
+
+<!-- Mariposa viajera: su posición y su aleteo dependen del scroll (ver scripts/scrollMotion.ts). -->
+<div class="flyer" data-flyer aria-hidden="true">
+  <ButterflyArt id={id} uid="flyer" />
+</div>
+
+<style>
+  .flyer {
+    position: fixed;
+    top: 62vh;
+    left: 78vw;
+    z-index: 40;
+    width: clamp(3.6rem, 8vw, 7.5rem);
+    translate: -50% -50%;
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 1.2rem 0.8rem rgb(43 33 24 / 0.22));
+    will-change: transform;
+  }
+</style>

@@ -1,0 +1,230 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import PlantArt from '../../components/PlantArt.astro';
+import PollinatorIcon from '../../components/PollinatorIcon.astro';
+import { nectarPlants } from '../../data/plants';
+import { pollinators } from '../../data/pollinators';
+import type { PollinatorId } from '../../data/pollinators';
+import { url } from '../../utils/url';
+
+const filters = Object.values(pollinators).filter((pollinator) => nectarPlants.some((plant) => plant.pollinators.includes(pollinator.id)));
+const introPlants = [
+  { id: 'salvia-azul', right: 22, size: 24, speed: 0.25 },
+  { id: 'lantana', right: 6, size: 19, speed: 0.5 },
+  { id: 'vara-de-oro', right: 40, size: 16, speed: 0.7 },
+];
+---
+
+<Base
+  title="Plantas nectaríferas para polinizadores"
+  description="Diez plantas nativas que dan néctar a colibríes, abejas, abejorros y mariposas en Córdoba, con guía de cultivo para jardín y para balcón."
+>
+  <PageIntro eyebrow="Plantas generales" title="Néctar para todos" tone="orange">
+    <Fragment slot="art">
+      {
+        introPlants.map((item) => (
+          <div class="intro-plant" style={`right:${item.right}%; width:${item.size}vw`} data-parallax={item.speed}>
+            <PlantArt id={item.id} />
+          </div>
+        ))
+      }
+    </Fragment>
+    <p>
+      Las flores nectaríferas son la estación de servicio del corredor: cargan de energía a cualquier polinizador que pase. Filtrá por a quién querés invitar.
+    </p>
+  </PageIntro>
+
+  <section class="catalog">
+    <div class="container">
+      <div class="filters" role="group" aria-label="Filtrar por polinizador" data-filters hidden>
+        <button type="button" class="filters__button" data-filter="all" aria-pressed="true">Todas</button>
+        {
+          filters.map((pollinator) => (
+            <button type="button" class="filters__button" data-filter={pollinator.id} aria-pressed="false">
+              <span class="filters__icon"><PollinatorIcon id={pollinator.id as PollinatorId} /></span>
+              {pollinator.name}
+            </button>
+          ))
+        }
+      </div>
+      <p class="visually-hidden" role="status" data-filter-status></p>
+
+      <ul class="catalog__grid">
+        {
+          nectarPlants.map((plant) => (
+            <li data-reveal data-pollinators={plant.pollinators.join(' ')}>
+              <a class="plant-card" href={url(`/nectariferas/${plant.id}/`)}>
+                <div class="plant-card__art"><PlantArt id={plant.id} /></div>
+                <div class="plant-card__text">
+                  <h2>{plant.commonName}</h2>
+                  <p class="plant-card__latin"><em>{plant.scientificName}</em></p>
+                  <ul class="plant-card__pollinators" aria-label={`Alimenta a: ${plant.pollinators.map((id) => pollinators[id].name.toLowerCase()).join(', ')}`}>
+                    {plant.pollinators.map((id) => <li title={pollinators[id].name}><PollinatorIcon id={id} /></li>)}
+                  </ul>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const filters = document.querySelector<HTMLElement>('[data-filters]');
+  const status = document.querySelector<HTMLElement>('[data-filter-status]');
+  const cards = document.querySelectorAll<HTMLElement>('[data-pollinators]');
+
+  if (filters) {
+    filters.hidden = false;
+    const buttons = filters.querySelectorAll<HTMLButtonElement>('[data-filter]');
+
+    buttons.forEach((button) =>
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter!;
+        buttons.forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+
+        let visible = 0;
+        cards.forEach((card) => {
+          const matches = filter === 'all' || card.dataset.pollinators!.split(' ').includes(filter);
+          card.hidden = !matches;
+          if (matches) visible++;
+        });
+        if (status) status.textContent = `${visible} plantas`;
+      }),
+    );
+  }
+</script>
+
+<style>
+  .intro-plant {
+    position: absolute;
+    bottom: -14%;
+    min-width: 7rem;
+  }
+
+  @media (max-width: 56rem) {
+    .intro-plant {
+      opacity: 0.25;
+    }
+  }
+
+  .catalog {
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(4rem, 9vw, 8rem);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .filters__button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.9rem;
+    padding: 0.3rem 1.1rem 0.3rem 0.4rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--butter-light);
+    box-shadow: inset 0 0 0 2px var(--butter-deep);
+    color: var(--ink);
+    font: 700 0.95rem var(--font-sans);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .filters__button[data-filter='all'] {
+    padding-left: 1.1rem;
+  }
+
+  .filters__button[aria-pressed='true'] {
+    background: var(--green-700);
+    box-shadow: none;
+    color: var(--butter-light);
+  }
+
+  .filters__icon {
+    width: 2.2rem;
+    padding: 0.2rem;
+    border-radius: 50%;
+    background: var(--butter);
+  }
+
+  .catalog__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr));
+    gap: clamp(1rem, 2.5vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .plant-card {
+    display: grid;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--butter-light);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .plant-card:hover {
+    transform: translateY(-0.4rem);
+  }
+
+  .plant-card__art {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    aspect-ratio: 1;
+    padding: 8% 8% 0;
+    overflow: hidden;
+    background: var(--green-100);
+  }
+
+  .plant-card__art :global(svg) {
+    height: 100%;
+    width: auto;
+    transform-origin: 50% 100%;
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .plant-card:hover .plant-card__art :global(svg) {
+    transform: scale(1.06) rotate(-1.5deg);
+  }
+
+  .plant-card__text {
+    padding: 1.1rem 1.3rem 1.4rem;
+  }
+
+  .plant-card__text h2 {
+    font-size: 1.5rem;
+    color: var(--green-900);
+  }
+
+  .plant-card__latin {
+    color: var(--ink-soft);
+  }
+
+  .plant-card__pollinators {
+    display: flex;
+    gap: 0.4rem;
+    margin: 0.9rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .plant-card__pollinators li {
+    width: 2.3rem;
+    padding: 0.25rem;
+    border-radius: 50%;
+    background: var(--butter);
+  }
+</style>

@@ -1,0 +1,163 @@
+---
+import Base from '../../layouts/Base.astro';
+import PageIntro from '../../components/PageIntro.astro';
+import ButterflyArt from '../../components/ButterflyArt.astro';
+import PlantArt from '../../components/PlantArt.astro';
+import { butterflies } from '../../data/butterflies';
+import { getPlant } from '../../data/plants';
+import { url } from '../../utils/url';
+
+// Mariposas decorativas del encabezado: posición (en %), tamaño, giro y velocidad de parallax.
+const floating = [
+  { id: 'monarca-del-sur', left: 62, top: 12, size: 17, rotate: -14, speed: 0.5 },
+  { id: 'limonera-grande', left: 84, top: 48, size: 11, rotate: 20, speed: -0.4 },
+  { id: 'cuatro-ojos', left: 56, top: 62, size: 12, rotate: 10, speed: 0.9 },
+  { id: 'cenicienta', left: 78, top: 8, size: 6, rotate: -24, speed: -0.8 },
+  { id: 'espejito', left: 90, top: 78, size: 13, rotate: -8, speed: 0.3 },
+];
+---
+
+<Base
+  title="Plantas nutricias para mariposas"
+  description="Diez mariposas nativas de la ciudad de Córdoba y la planta que cada una necesita para criar a sus orugas, con guía de cultivo para jardín y para balcón."
+>
+  <PageIntro eyebrow="Plantas específicas" title="Diez mariposas, diez plantas" tone="green">
+    <Fragment slot="art">
+      {
+        floating.map((item, index) => (
+          <div class="floating" style={`left:${item.left}%; top:${item.top}%; width:${item.size}vw; rotate:${item.rotate}deg`} data-parallax={item.speed}>
+            <ButterflyArt id={item.id} uid={`intro-${index}`} />
+          </div>
+        ))
+      }
+    </Fragment>
+    <p>
+      Sin su planta nutricia, una mariposa no puede dejar descendencia. Estas son diez especies que vuelan en la ciudad de Córdoba: elegí una y conocé la planta que necesita.
+    </p>
+  </PageIntro>
+
+  <section class="catalog">
+    <ul class="container catalog__grid">
+      {
+        butterflies.map((butterfly) => {
+          const plant = getPlant(butterfly.hostPlantId);
+          return (
+            <li data-reveal>
+              <a class="pair-card" href={url(`/mariposas/${butterfly.id}/`)}>
+                <div class="pair-card__art">
+                  <ButterflyArt id={butterfly.id} uid="grid" class="pair-card__butterfly" />
+                  <PlantArt id={plant.id} class="pair-card__plant" />
+                </div>
+                <div class="pair-card__text">
+                  <h2>{butterfly.commonName}</h2>
+                  <p class="pair-card__latin"><em>{butterfly.scientificName}</em></p>
+                  <p class="pair-card__plant-name"><span>Su planta</span>{plant.commonName}</p>
+                </div>
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .floating {
+    position: absolute;
+    min-width: 3rem;
+    opacity: 0.95;
+  }
+
+  @media (max-width: 48rem) {
+    .floating {
+      opacity: 0.28;
+    }
+  }
+
+  .catalog {
+    padding-block: clamp(3rem, 7vw, 6rem) clamp(4rem, 9vw, 8rem);
+  }
+
+  .catalog__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    gap: clamp(1rem, 2.5vw, 2rem);
+    margin-block: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pair-card {
+    display: grid;
+    height: 100%;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--butter-light);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .pair-card:hover {
+    transform: translateY(-0.4rem);
+  }
+
+  .pair-card__art {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    background: var(--green-100);
+    overflow: hidden;
+  }
+
+  .pair-card__art :global(.pair-card__butterfly) {
+    position: absolute;
+    top: 12%;
+    left: 8%;
+    z-index: 1;
+    width: 58%;
+    rotate: -10deg;
+    transition: rotate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1), translate 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    filter: drop-shadow(0 0.6rem 0.5rem rgb(43 33 24 / 0.2));
+  }
+
+  .pair-card:hover :global(.pair-card__butterfly) {
+    rotate: 4deg;
+    translate: 6% -6%;
+  }
+
+  .pair-card__art :global(.pair-card__plant) {
+    position: absolute;
+    right: -4%;
+    bottom: -6%;
+    height: 96%;
+    width: auto;
+  }
+
+  .pair-card__text {
+    padding: 1.25rem 1.4rem 1.5rem;
+  }
+
+  .pair-card__text h2 {
+    font-size: 1.6rem;
+    color: var(--green-900);
+  }
+
+  .pair-card__latin {
+    color: var(--ink-soft);
+  }
+
+  .pair-card__plant-name {
+    margin-top: 0.8rem;
+    font-weight: 700;
+    color: var(--orange-600);
+  }
+
+  .pair-card__plant-name span {
+    display: block;
+    font: 700 0.72rem var(--font-sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+</style>

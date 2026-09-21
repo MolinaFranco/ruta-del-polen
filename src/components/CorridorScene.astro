@@ -1,0 +1,111 @@
+---
+// Escena "el mar de cemento": al cruzar la pantalla, los balcones se llenan de plantas
+// y se dibuja la ruta que une los dos espacios verdes.
+const buildings = [
+  { x: 250, width: 110, height: 250 },
+  { x: 380, width: 90, height: 330 },
+  { x: 490, width: 130, height: 210 },
+  { x: 640, width: 100, height: 370 },
+  { x: 760, width: 120, height: 270 },
+  { x: 900, width: 80, height: 190 },
+];
+const GROUND = 430;
+
+// Puntos por donde pasa la ruta: techos y balcones con plantas.
+const stops = buildings.map((b, i) => ({ x: b.x + b.width * (i % 2 ? 0.3 : 0.7), y: GROUND - b.height, order: i }));
+const route = `M120,300 C180,250 ${stops[0].x - 40},${stops[0].y - 50} ${stops[0].x},${stops[0].y - 26} ` + stops.slice(1).map((s, i) => `S${s.x - 40},${s.y - 60 + (i % 2) * 20} ${s.x},${s.y - 26}`).join(' ') + ` S1040,230 1100,290`;
+
+const tree = (x: number, y: number, s: number) =>
+  `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-5" y="-40" width="10" height="44" rx="3" fill="#6b4a2c"/><circle cx="0" cy="-66" r="38" fill="#4f8a3c"/><path d="M0,-104 A38,38 0 0 1 0,-28 Z" fill="#2c5e33"/><circle cx="-12" cy="-76" r="5" fill="#a5cd72"/></g>`;
+
+const planter = (x: number, y: number) =>
+  `<g transform="translate(${x} ${y})"><path d="M-14,0 L14,0 L11,-12 L-11,-12 Z" fill="#c8683c"/><path d="M0,-12 C-16,-22 -18,-36 -8,-40 C-4,-30 -2,-22 0,-12 Z" fill="#4f8a3c"/><path d="M0,-12 C16,-22 18,-36 8,-40 C4,-30 2,-22 0,-12 Z" fill="#2c5e33"/><path d="M0,-12 L0,-40" stroke="#2c5e33" stroke-width="2"/><circle cx="0" cy="-44" r="6" fill="#f28c28"/><circle cx="0" cy="-44" r="2.4" fill="#f6c435"/></g>`;
+---
+
+<section class="corridor">
+  <div class="container corridor__text" data-reveal>
+    <p class="eyebrow">El efecto isla</p>
+    <h2>Para una mariposa, cruzar el mar de cemento es una travesía letal.</h2>
+    <p class="lead">
+      Las plazas y los parques quedaron aislados entre sí. Pero si cada balcón, patio y jardín suma una planta, las islas verdes vuelven a conectarse: eso es un corredor biológico.
+    </p>
+  </div>
+
+  <div class="corridor__scene">
+    <svg viewBox="0 0 1200 470" aria-hidden="true">
+      <defs>
+        <mask id="route-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="470">
+          <path d={route} fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" data-draw></path>
+        </mask>
+      </defs>
+
+      <ellipse cx="110" cy="432" rx="190" ry="34" fill="#7fb04f"></ellipse>
+      <ellipse cx="1100" cy="432" rx="190" ry="34" fill="#7fb04f"></ellipse>
+      <g set:html={tree(60, 420, 1.2) + tree(150, 426, 0.9) + tree(1060, 424, 1) + tree(1150, 420, 1.25)} />
+
+      <rect x="220" y={GROUND} width="790" height="12" fill="#cbbf9a"></rect>
+      {
+        buildings.map((b, i) => (
+          <g>
+            <rect x={b.x} y={GROUND - b.height} width={b.width} height={b.height} fill={i % 2 ? '#e2d6b0' : '#d6caa6'} />
+            <rect x={b.x + b.width / 2} y={GROUND - b.height} width={b.width / 2} height={b.height} fill="rgb(43 33 24 / 0.07)" />
+            {Array.from({ length: Math.floor(b.height / 56) }, (_, row) => (
+              <g>
+                <rect x={b.x + 14} y={GROUND - b.height + 26 + row * 56} width={b.width - 28} height="22" rx="2" fill="#f4ecd0" />
+                <rect x={b.x + 8} y={GROUND - b.height + 48 + row * 56} width={b.width - 16} height="5" fill="#a89c78" />
+              </g>
+            ))}
+          </g>
+        ))
+      }
+
+      {
+        buildings.map((b, i) => (
+          <g>
+            <g data-grow={i} set:html={planter(stops[i].x, stops[i].y)} />
+            {Math.floor(b.height / 56) > 1 && <g data-grow={i} set:html={planter(b.x + b.width * (i % 2 ? 0.72 : 0.28), GROUND - b.height + 104)} />}
+            {Math.floor(b.height / 56) > 3 && <g data-grow={i} set:html={planter(b.x + b.width * (i % 2 ? 0.3 : 0.7), GROUND - b.height + 216)} />}
+          </g>
+        ))
+      }
+
+      <path d={route} fill="none" stroke="#f28c28" stroke-width="5" stroke-linecap="round" stroke-dasharray="1 14" mask="url(#route-mask)"></path>
+    </svg>
+  </div>
+</section>
+
+<style>
+  .corridor {
+    padding-block: clamp(5rem, 11vw, 10rem) 0;
+    background: var(--butter-light);
+    overflow: hidden;
+  }
+
+  .corridor__text {
+    max-width: 58rem;
+    text-align: center;
+  }
+
+  .corridor__text h2 {
+    margin-block: 0.3em 0.5em;
+    color: var(--green-900);
+  }
+
+  .corridor__text .lead {
+    max-width: 52ch;
+    margin-inline: auto;
+  }
+
+  .corridor__scene {
+    display: flex;
+    justify-content: center;
+    margin-top: clamp(2rem, 5vw, 4rem);
+  }
+
+  /* En pantallas angostas la escena no se achica del todo: se recorta por los costados. */
+  .corridor__scene svg {
+    flex: none;
+    width: max(100%, 46rem);
+    max-width: 90rem;
+  }
+</style>

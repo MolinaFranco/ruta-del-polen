@@ -1,0 +1,176 @@
+---
+import { leaf } from '../art/plantKit';
+
+// Follaje del primer plano, dibujado con la misma hoja en dos tonos del resto del sitio.
+const frond = (x: number, y: number, angle: number, size: number, color: string, shade: string) => {
+  let drawing = '';
+  for (let i = 0; i < 7; i++) {
+    const t = i / 6;
+    const rad = (angle * Math.PI) / 180;
+    const px = x + Math.cos(rad) * size * t * 0.9;
+    const py = y + Math.sin(rad) * size * t * 0.9;
+    const length = size * (0.55 - t * 0.25);
+    drawing += leaf(px, py, angle - 55, length, length * 0.26, color, shade) + leaf(px, py, angle + 55, length, length * 0.26, color, shade);
+  }
+  return drawing + leaf(x + Math.cos((angle * Math.PI) / 180) * size * 0.9, y + Math.sin((angle * Math.PI) / 180) * size * 0.9, angle, size * 0.35, size * 0.09, color, shade);
+};
+
+const foliageLeft = frond(40, 420, -62, 300, '#2c5e33', '#173a22') + frond(-10, 420, -30, 260, '#4f8a3c', '#2c5e33') + frond(120, 430, -96, 220, '#173a22', '#0f2a18');
+const foliageRight = frond(380, 420, -118, 300, '#2c5e33', '#173a22') + frond(430, 420, -150, 250, '#4f8a3c', '#2c5e33') + frond(300, 430, -84, 200, '#173a22', '#0f2a18');
+---
+
+<section class="hero" data-parallax-scene>
+  <div class="hero__sun" data-parallax="0.9"></div>
+
+  <svg class="hero__layer hero__layer--sierras" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true" data-parallax="0.7">
+    <path d="M0,400 L0,250 C120,190 200,210 300,160 C380,120 430,150 520,190 C620,230 700,120 820,100 C930,84 1000,170 1100,190 C1200,208 1260,130 1360,120 C1460,112 1540,180 1600,200 L1600,400 Z" fill="#c9dd98"></path>
+    <path d="M0,400 L0,300 C140,250 260,270 380,240 C520,206 600,250 760,230 C900,212 1000,250 1160,236 C1320,222 1460,260 1600,250 L1600,400 Z" fill="#a5cd72"></path>
+  </svg>
+
+  <svg class="hero__layer hero__layer--city" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true" data-parallax="0.5">
+    <g fill="#e9d48e">
+      <rect x="120" y="230" width="70" height="170"></rect><rect x="200" y="190" width="54" height="210"></rect><rect x="262" y="250" width="80" height="150"></rect>
+      <rect x="420" y="170" width="60" height="230"></rect><rect x="488" y="220" width="90" height="180"></rect><rect x="600" y="140" width="66" height="260"></rect>
+      <rect x="674" y="210" width="76" height="190"></rect><rect x="790" y="180" width="58" height="220"></rect><rect x="856" y="240" width="96" height="160"></rect>
+      <rect x="990" y="150" width="64" height="250"></rect><rect x="1062" y="214" width="84" height="186"></rect><rect x="1190" y="190" width="60" height="210"></rect>
+      <rect x="1258" y="246" width="90" height="154"></rect><rect x="1390" y="200" width="70" height="200"></rect>
+      <!-- Guiño local: las torres de una iglesia colonial -->
+      <path d="M1480,400 L1480,250 L1492,220 L1504,250 L1504,290 L1540,290 L1540,250 L1552,220 L1564,250 L1564,400 Z"></path>
+    </g>
+    <g fill="#f4e6b3">
+      <rect x="212" y="206" width="10" height="14"></rect><rect x="232" y="206" width="10" height="14"></rect><rect x="212" y="236" width="10" height="14"></rect>
+      <rect x="432" y="190" width="10" height="14"></rect><rect x="456" y="190" width="10" height="14"></rect><rect x="432" y="224" width="10" height="14"></rect>
+      <rect x="612" y="160" width="10" height="14"></rect><rect x="640" y="160" width="10" height="14"></rect><rect x="612" y="196" width="10" height="14"></rect><rect x="640" y="232" width="10" height="14"></rect>
+      <rect x="1002" y="170" width="10" height="14"></rect><rect x="1030" y="170" width="10" height="14"></rect><rect x="1002" y="206" width="10" height="14"></rect>
+      <rect x="1202" y="210" width="10" height="14"></rect><rect x="1226" y="244" width="10" height="14"></rect>
+    </g>
+  </svg>
+
+  <svg class="hero__layer hero__layer--hills" viewBox="0 0 1600 400" preserveAspectRatio="xMidYMax slice" aria-hidden="true" data-parallax="0.3">
+    <path d="M0,400 L0,330 C200,280 380,320 560,300 C760,278 900,330 1100,310 C1300,290 1440,320 1600,296 L1600,400 Z" fill="#7fb04f"></path>
+    <path d="M0,400 L0,360 C260,330 420,366 700,350 C980,334 1240,370 1600,344 L1600,400 Z" fill="#4f8a3c"></path>
+  </svg>
+
+  <svg class="hero__foliage hero__foliage--left" viewBox="0 0 440 440" aria-hidden="true" data-parallax="-0.25"><g set:html={foliageLeft} /></svg>
+  <svg class="hero__foliage hero__foliage--right" viewBox="0 0 440 440" aria-hidden="true" data-parallax="-0.25"><g set:html={foliageRight} /></svg>
+
+  <div class="hero__content container" data-parallax="0.35">
+    <p class="eyebrow">Córdoba, un solo corredor biológico</p>
+    <h1>La ruta <em>del polen</em></h1>
+    <p class="lead hero__lead">
+      Tu balcón no es pequeño: es una escala técnica para mariposas. Sumá tu maceta a la red de refugios que une los espacios verdes de la ciudad.
+    </p>
+    <a class="button" href="#refugio">Quiero sumar mi hogar</a>
+  </div>
+
+  <div class="hero__hint" aria-hidden="true"><span></span></div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    min-height: calc(100svh - 3.5rem);
+    padding-block: clamp(3rem, 8vh, 6rem) clamp(12rem, 34vh, 22rem);
+    overflow: hidden;
+    background: linear-gradient(180deg, #fff3c4 0%, #ffe9a6 55%, #fbd58a 100%);
+    isolation: isolate;
+  }
+
+  .hero__sun {
+    position: absolute;
+    top: 12%;
+    right: 12%;
+    z-index: -5;
+    width: clamp(9rem, 22vw, 20rem);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(circle, #f9b872 0%, #f7a653 60%, #f28c28 100%);
+    box-shadow: 0 0 0 clamp(1rem, 3vw, 2.5rem) rgb(249 184 114 / 0.25), 0 0 0 clamp(2.4rem, 7vw, 6rem) rgb(249 184 114 / 0.12);
+  }
+
+  .hero__layer {
+    position: absolute;
+    left: 0;
+    bottom: -12%;
+    width: 100%;
+    height: 62%;
+  }
+
+  .hero__layer--sierras {
+    z-index: -4;
+  }
+
+  .hero__layer--city {
+    z-index: -3;
+    height: 50%;
+    opacity: 0.9;
+  }
+
+  .hero__layer--hills {
+    z-index: -2;
+    bottom: -6%;
+    height: 46%;
+  }
+
+  .hero__foliage {
+    position: absolute;
+    bottom: -4%;
+    z-index: 2;
+    width: clamp(11rem, 30vw, 30rem);
+    pointer-events: none;
+  }
+
+  .hero__foliage--left {
+    left: -2%;
+  }
+
+  .hero__foliage--right {
+    right: -2%;
+  }
+
+  .hero__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+  }
+
+  .hero__content h1 {
+    margin-block: 0.15em 0.3em;
+    color: var(--green-900);
+  }
+
+  .hero__content h1 em {
+    color: var(--orange-600);
+  }
+
+  .hero__lead {
+    max-width: 36ch;
+    margin: 0 auto 2rem;
+    color: var(--ink);
+  }
+
+  .hero__hint {
+    position: absolute;
+    bottom: 1.5rem;
+    left: 50%;
+    z-index: 3;
+    width: 1.6rem;
+    height: 2.6rem;
+    translate: -50% 0;
+    border: 2px solid var(--butter-light);
+    border-radius: 999px;
+  }
+
+  .hero__hint span {
+    position: absolute;
+    top: 0.45rem;
+    left: 50%;
+    width: 0.3rem;
+    height: 0.6rem;
+    translate: -50% 0;
+    border-radius: 999px;
+    background: var(--butter-light);
+  }
+</style>

@@ -1,0 +1,372 @@
+---
+import PlantArt from './PlantArt.astro';
+import PollinatorIcon from './PollinatorIcon.astro';
+import { balconyFitLabels } from '../data/plants';
+import type { GrowingGuide, Plant } from '../data/plants';
+import { pollinators } from '../data/pollinators';
+
+interface Props {
+  plant: Plant;
+  headingLevel?: 'h1' | 'h2';
+}
+
+const { plant, headingLevel: Heading = 'h2' } = Astro.props;
+
+const needs: { key: keyof GrowingGuide; gardenLabel: string; balconyLabel: string; icon: string }[] = [
+  { key: 'depth', gardenLabel: 'Profundidad de terreno', balconyLabel: 'Profundidad de maceta', icon: 'M4,4 L20,4 M12,4 L12,20 M7,15 L12,20 L17,15' },
+  { key: 'substrate', gardenLabel: 'Suelo', balconyLabel: 'Sustrato', icon: 'M3,18 C7,10 10,14 12,9 C14,14 17,10 21,18 Z' },
+  { key: 'sun', gardenLabel: 'Sol', balconyLabel: 'Sol', icon: 'M12,7 A5,5 0 1 0 12,17 A5,5 0 1 0 12,7 M12,1 L12,4 M12,20 L12,23 M1,12 L4,12 M20,12 L23,12 M4.2,4.2 L6.3,6.3 M17.7,17.7 L19.8,19.8 M4.2,19.8 L6.3,17.7 M17.7,6.3 L19.8,4.2' },
+  { key: 'watering', gardenLabel: 'Riego', balconyLabel: 'Riego', icon: 'M12,3 C8,9 6,12 6,15 A6,6 0 0 0 18,15 C18,12 16,9 12,3 Z' },
+  { key: 'germination', gardenLabel: 'Germinación', balconyLabel: 'Germinación', icon: 'M12,21 L12,11 M12,13 C8,13 6,10 6,6 C10,6 12,9 12,13 M12,11 C12,8 14,5 18,5 C18,9 16,11 12,11' },
+];
+---
+
+<!-- data-mode decide qué guía se ve (jardín o balcón). Sin JS se muestran las dos, una debajo de la otra. -->
+<section class="sheet" data-plant-sheet data-mode="garden">
+  <div class="sheet__art" data-parallax-scene>
+    <div class="sheet__disc" data-parallax="0.12">
+      <PlantArt id={plant.id} base="both" label={`Ilustración de ${plant.commonName}`} />
+    </div>
+  </div>
+
+  <div class="sheet__body">
+    <p class="eyebrow">{plant.kind === 'host' ? 'Planta nutricia' : 'Planta nectarífera'}</p>
+    <Heading class="sheet__name">{plant.commonName}</Heading>
+    <p class="sheet__latin"><em>{plant.scientificName}</em> · {plant.family}</p>
+    <p class="sheet__summary">{plant.summary}</p>
+
+    <dl class="sheet__facts">
+      <div><dt>Porte</dt><dd>{plant.habit}, {plant.height}</dd></div>
+      <div><dt>Floración</dt><dd>{plant.bloom}</dd></div>
+      <div><dt>Origen</dt><dd>{plant.origin}</dd></div>
+    </dl>
+
+    <div class="sheet__pollinators">
+      <h3>A quién alimenta</h3>
+      <ul>
+        {
+          plant.pollinators.map((id) => (
+            <li title={pollinators[id].note}>
+              <span class="sheet__pollinator-icon"><PollinatorIcon id={id} /></span>
+              {pollinators[id].name}
+            </li>
+          ))
+        }
+      </ul>
+      <p>{plant.pollinatorNote}</p>
+    </div>
+
+    <div class="sheet__guide">
+      <div class="sheet__guide-head">
+        <h3>Cómo cultivarla</h3>
+        <span class:list={['chip', plant.balconyFit === 'large-pot' && 'chip--orange']}>{balconyFitLabels[plant.balconyFit]}</span>
+      </div>
+
+      <div class="sheet__toggle" role="group" aria-label="Dónde vas a plantar">
+        <button type="button" data-mode-button="garden" aria-pressed="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12,22 L12,12 M12,14 C7,14 4,10 4,5 C9,5 12,9 12,14 M12,12 C12,8 15,4 20,4 C20,9 17,12 12,12 M3,22 L21,22" /></svg>
+          En el jardín
+        </button>
+        <button type="button" data-mode-button="balcony" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6,13 L18,13 L16.5,22 L7.5,22 Z M12,13 L12,6 M12,9 C9,9 7,7 7,3 C10,3 12,5 12,9 M12,7 C12,5 14,3 17,3 C17,6 15,7 12,7" /></svg>
+          En el balcón
+        </button>
+      </div>
+
+      {
+        (['garden', 'balcony'] as const).map((mode) => (
+          <div class="sheet__panel" data-panel={mode}>
+            <h4 class="sheet__panel-title">{mode === 'garden' ? 'En el jardín o patio' : 'En maceta, para el balcón'}</h4>
+            <dl class="sheet__needs">
+              {needs.map((need) => (
+                <div>
+                  <dt>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d={need.icon} /></svg>
+                    {mode === 'garden' ? need.gardenLabel : need.balconyLabel}
+                  </dt>
+                  <dd>{plant[mode][need.key]}</dd>
+                </div>
+              ))}
+            </dl>
+            <p class="sheet__tip"><strong>Un consejo:</strong> {plant[mode].tip}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<script>
+  const STORAGE_KEY = 'growing-mode';
+
+  function readSavedMode() {
+    try {
+      return localStorage.getItem(STORAGE_KEY);
+    } catch {
+      return null;
+    }
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-plant-sheet]').forEach((sheet) => {
+    const buttons = sheet.querySelectorAll<HTMLButtonElement>('[data-mode-button]');
+
+    const setMode = (mode: string) => {
+      sheet.dataset.mode = mode;
+      buttons.forEach((button) => button.setAttribute('aria-pressed', String(button.dataset.modeButton === mode)));
+    };
+
+    sheet.classList.add('is-interactive');
+    // Se recuerda la última elección: quien vive en departamento no tiene que elegir "balcón" en cada ficha.
+    setMode(readSavedMode() === 'balcony' ? 'balcony' : 'garden');
+
+    buttons.forEach((button) =>
+      button.addEventListener('click', () => {
+        const mode = button.dataset.modeButton!;
+        setMode(mode);
+        try {
+          localStorage.setItem(STORAGE_KEY, mode);
+        } catch {
+          // Sin almacenamiento disponible (modo privado): la elección vale solo para esta ficha.
+        }
+      }),
+    );
+  });
+</script>
+
+<style>
+  .sheet {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+  }
+
+  .sheet__art {
+    position: sticky;
+    top: 5.5rem;
+  }
+
+  .sheet__disc {
+    display: grid;
+    place-items: center;
+    padding: 9% 9% 12%;
+    border-radius: 46% 54% 50% 50% / 52% 48% 52% 48%;
+    background: var(--green-100);
+  }
+
+  .sheet__disc :global(svg) {
+    width: 100%;
+  }
+
+  .sheet__name {
+    margin-top: 0.15em;
+    font-size: clamp(2.4rem, 1.5rem + 4vw, 5rem);
+    color: var(--green-900);
+  }
+
+  .sheet__latin {
+    margin-top: 0.4rem;
+    font-size: 1.1em;
+    color: var(--ink-soft);
+  }
+
+  .sheet__summary {
+    margin-top: 1.25rem;
+    font-size: 1.15em;
+    line-height: 1.5;
+  }
+
+  .sheet__facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 1rem 1.5rem;
+    margin: 1.75rem 0 0;
+    padding-block: 1.25rem;
+    border-block: 1px solid rgb(43 33 24 / 0.15);
+  }
+
+  .sheet dt {
+    font: 700 0.78rem var(--font-sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--green-700);
+  }
+
+  .sheet dd {
+    margin: 0.2rem 0 0;
+  }
+
+  .sheet__pollinators {
+    margin-top: 2rem;
+  }
+
+  .sheet__pollinators ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0.8rem 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sheet__pollinators li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.3rem 1rem 0.3rem 0.35rem;
+    border-radius: 999px;
+    background: var(--butter-light);
+    box-shadow: inset 0 0 0 2px var(--butter-deep);
+    font: 700 0.95rem var(--font-sans);
+  }
+
+  .sheet__pollinator-icon {
+    width: 2.3rem;
+    padding: 0.25rem;
+    border-radius: 50%;
+    background: var(--butter);
+  }
+
+  .sheet__pollinators p {
+    color: var(--ink-soft);
+  }
+
+  .sheet__guide {
+    margin-top: 2.5rem;
+    padding: clamp(1.25rem, 3vw, 2.25rem);
+    border-radius: var(--radius);
+    background: var(--butter-light);
+    box-shadow: var(--shadow);
+  }
+
+  .sheet__guide-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .sheet__toggle {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    margin-top: 1.25rem;
+    padding: 0.3rem;
+    border-radius: 999px;
+    background: var(--butter-deep);
+  }
+
+  .is-interactive .sheet__toggle {
+    display: grid;
+  }
+
+  .sheet__toggle button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.7rem 0.75rem;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink-soft);
+    font: 700 1rem var(--font-sans);
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  .sheet__toggle svg {
+    width: 1.3rem;
+    flex: none;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .sheet__toggle button[aria-pressed='true'] {
+    background: var(--green-700);
+    color: var(--butter-light);
+  }
+
+  .sheet__panel {
+    margin-top: 1.5rem;
+  }
+
+  .sheet__panel-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+    color: var(--green-900);
+  }
+
+  /* Con JS activo solo se ve el panel elegido y su título sobra (ya lo dice el selector). */
+  .is-interactive .sheet__panel-title,
+  .is-interactive[data-mode='garden'] [data-panel='balcony'],
+  .is-interactive[data-mode='balcony'] [data-panel='garden'] {
+    display: none;
+  }
+
+  .sheet__needs {
+    display: grid;
+    gap: 0;
+    margin: 0;
+  }
+
+  .sheet__needs > div {
+    display: grid;
+    grid-template-columns: 11rem 1fr;
+    gap: 0.25rem 1.25rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid rgb(43 33 24 / 0.12);
+  }
+
+  .sheet__needs dt {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding-top: 0.2rem;
+  }
+
+  .sheet__needs dt svg {
+    width: 1.25rem;
+    flex: none;
+    margin-top: -0.15rem;
+    fill: none;
+    stroke: var(--orange-600);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .sheet__needs dd {
+    margin: 0;
+  }
+
+  .sheet__tip {
+    margin-top: 1.25rem;
+    padding: 1rem 1.25rem;
+    border-radius: 1rem;
+    background: var(--green-100);
+    color: var(--green-900);
+  }
+
+  @media (max-width: 56rem) {
+    .sheet {
+      grid-template-columns: 1fr;
+    }
+
+    .sheet__art {
+      position: static;
+      width: min(100%, 22rem);
+      margin-inline: auto;
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .sheet__needs > div {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

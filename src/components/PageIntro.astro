@@ -1,0 +1,63 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  tone?: 'green' | 'orange';
+}
+
+const { eyebrow, title, tone = 'green' } = Astro.props;
+---
+
+<header class:list={['page-intro', `page-intro--${tone}`]} data-parallax-scene>
+  <div class="page-intro__art" aria-hidden="true"><slot name="art" /></div>
+  <div class="container page-intro__text">
+    <p class="eyebrow">{eyebrow}</p>
+    <h1>{title}</h1>
+    <div class="lead"><slot /></div>
+  </div>
+</header>
+
+<style>
+  .page-intro {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(4rem, 10vw, 9rem);
+    isolation: isolate;
+  }
+
+  .page-intro--green {
+    background: var(--green-900);
+    color: var(--butter);
+  }
+
+  .page-intro--orange {
+    background: var(--orange-500);
+    color: var(--ink);
+  }
+
+  .page-intro--green .eyebrow {
+    color: var(--orange-300);
+  }
+
+  .page-intro--orange .eyebrow {
+    color: var(--green-900);
+  }
+
+  .page-intro h1 {
+    max-width: 14ch;
+    margin-block: 0.2em 0.35em;
+    font-size: clamp(2.6rem, 1.4rem + 5.5vw, 6.5rem);
+  }
+
+  .page-intro .lead {
+    max-width: 46ch;
+    color: inherit;
+    opacity: 0.92;
+  }
+
+  .page-intro__art {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+</style>

@@ -1,0 +1,107 @@
+---
+import ButterflyArt from './ButterflyArt.astro';
+import PlantArt from './PlantArt.astro';
+---
+
+<section class="steps">
+  <div class="container">
+    <h2 class="steps__title" data-reveal>Tres pasos, una mariposa</h2>
+    <ol class="steps__list">
+      <li data-reveal>
+        <div class="steps__art" data-mode="balcony"><PlantArt id="bandera-espanola" base="both" /></div>
+        <p class="steps__number">1</p>
+        <h3>La planta que cultivás</h3>
+        <p>Sembrás una planta nutricia en una maceta o en un rincón del patio. Sin venenos.</p>
+      </li>
+      <li data-reveal data-reveal-delay="0.12">
+        <div class="steps__art steps__art--caterpillar">
+          <svg viewBox="0 0 200 120" aria-hidden="true">
+            <path d="M10,96 C60,60 140,110 192,70" fill="none" stroke="#4f8a3c" stroke-width="7" stroke-linecap="round"></path>
+            {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+              <g>
+                <circle cx={48 + i * 17} cy={70 - Math.sin(i * 0.9) * 7} r="13" fill={i % 2 ? '#f6c435' : '#fff6dc'} />
+                <circle cx={48 + i * 17} cy={70 - Math.sin(i * 0.9) * 7} r="13" fill="none" stroke="#2b2118" stroke-width="3.4" />
+              </g>
+            ))}
+            <circle cx="170" cy="62" r="12" fill="#2b2118"></circle>
+            <path d="M168,50 L162,32 M176,51 L184,34" stroke="#2b2118" stroke-width="2.6" stroke-linecap="round"></path>
+            <circle cx="174" cy="60" r="1.8" fill="#fff6dc"></circle>
+          </svg>
+        </div>
+        <p class="steps__number">2</p>
+        <h3>La oruga que hospedás</h3>
+        <p>Una mariposa encuentra tu planta y deja sus huevos. Las orugas comen hojas: es la señal de que funciona.</p>
+      </li>
+      <li data-reveal data-reveal-delay="0.24">
+        <div class="steps__art"><ButterflyArt id="monarca-del-sur" uid="steps" /></div>
+        <p class="steps__number">3</p>
+        <h3>La mariposa que ves volar</h3>
+        <p>En pocas semanas sale de la crisálida una mariposa nueva, que sigue viaje hacia el próximo refugio.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<style>
+  .steps {
+    padding-block: clamp(4rem, 9vw, 8rem);
+    background: var(--green-100);
+  }
+
+  .steps__title {
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    text-align: center;
+    color: var(--green-900);
+  }
+
+  .steps__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: clamp(2rem, 4vw, 3.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps__list li {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  /* Flex y no grid: así el alto en porcentaje del SVG se calcula contra los 13rem del contenedor. */
+  .steps__art {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 13rem;
+    margin-bottom: 1rem;
+  }
+
+  .steps__art :global(svg) {
+    height: 100%;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .steps__number {
+    width: 2.4rem;
+    height: 2.4rem;
+    margin-inline: auto;
+    border-radius: 50%;
+    background: var(--orange-500);
+    color: var(--ink);
+    font: 700 1.2rem/2.4rem var(--font-sans);
+  }
+
+  .steps__list h3 {
+    color: var(--green-900);
+  }
+
+  .steps__list p:last-child {
+    max-width: 30ch;
+    margin-inline: auto;
+    color: var(--ink-soft);
+  }
+</style>

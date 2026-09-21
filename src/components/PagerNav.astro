@@ -1,0 +1,56 @@
+---
+interface PagerLink {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  previous: PagerLink;
+  next: PagerLink;
+}
+
+const { previous, next } = Astro.props;
+---
+
+<nav class="pager" aria-label="Otras fichas">
+  <div class="container pager__inner">
+    <a href={previous.href} rel="prev"><span>← Anterior</span>{previous.label}</a>
+    <a href={next.href} rel="next" class="pager__next"><span>Siguiente →</span>{next.label}</a>
+  </div>
+</nav>
+
+<style>
+  .pager {
+    padding-block: 2rem;
+    background: var(--butter-deep);
+  }
+
+  .pager__inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .pager a {
+    display: grid;
+    font-size: 1.3rem;
+    font-weight: 800;
+    text-decoration: none;
+    color: var(--green-900);
+  }
+
+  .pager a:hover {
+    color: var(--orange-600);
+  }
+
+  .pager span {
+    font: 700 0.8rem var(--font-sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .pager__next {
+    text-align: right;
+  }
+</style>

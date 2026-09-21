@@ -1,0 +1,96 @@
+---
+import { url } from '../utils/url';
+
+const links = [
+  { href: url('/mariposas/'), label: 'Mariposas' },
+  { href: url('/nectariferas/'), label: 'Nectaríferas' },
+  { href: url('/#semillas'), label: 'Semillas' },
+];
+const current = Astro.url.pathname;
+---
+
+<header class="site-header" data-site-header>
+  <div class="site-header__inner container">
+    <a class="site-header__brand" href={url('/')} aria-label="La ruta del polen, inicio">
+      <svg viewBox="-14 -12 28 24" width="30" height="26" aria-hidden="true">
+        <path d="M0,-2 C4,-12 14,-10 12,-2 C11,3 4,4 0,2 C-4,4 -11,3 -12,-2 C-14,-10 -4,-12 0,-2 Z" fill="#f28c28"></path>
+        <path d="M0,2 C4,2 10,5 8,10 C6,13 1,10 0,5 C-1,10 -6,13 -8,10 C-10,5 -4,2 0,2 Z" fill="#d9601a"></path>
+        <ellipse cx="0" cy="1" rx="1.4" ry="7" fill="#2b2118"></ellipse>
+      </svg>
+      <span>La ruta del polen</span>
+    </a>
+    <nav aria-label="Principal">
+      <ul class="site-header__links">
+        {
+          links.map((link) => (
+            <li>
+              <a href={link.href} aria-current={current.startsWith(link.href) && !link.href.includes('#') ? 'page' : undefined}>
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgb(255 243 196 / 0.82);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgb(43 33 24 / 0.08);
+  }
+
+  .site-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 3.5rem;
+  }
+
+  .site-header__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 800;
+    font-size: 1.15rem;
+    text-decoration: none;
+    color: var(--green-900);
+    white-space: nowrap;
+  }
+
+  .site-header__links {
+    display: flex;
+    gap: clamp(0.75rem, 2.5vw, 2rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font: 700 0.95rem var(--font-sans);
+  }
+
+  .site-header__links a {
+    padding-block: 0.4rem;
+    text-decoration: none;
+    color: var(--ink-soft);
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .site-header__links a:hover,
+  .site-header__links a[aria-current='page'] {
+    color: var(--green-900);
+    border-color: var(--orange-500);
+  }
+
+  @media (max-width: 30rem) {
+    .site-header__brand span {
+      display: none;
+    }
+  }
+</style>

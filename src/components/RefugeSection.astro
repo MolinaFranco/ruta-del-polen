@@ -1,0 +1,168 @@
+---
+import ButterflyArt from './ButterflyArt.astro';
+import PlantArt from './PlantArt.astro';
+import PollinatorIcon from './PollinatorIcon.astro';
+import { url } from '../utils/url';
+---
+
+<section class="refuge" id="refugio">
+  <div class="container">
+    <div class="refuge__intro" data-reveal>
+      <p class="eyebrow">Empezá acá</p>
+      <h2>Quiero que mi hogar sea un refugio de polinizadores</h2>
+      <p class="lead">Un refugio completo tiene dos tipos de plantas: las que dan de comer a todos y las que crían a cada mariposa. Elegí por dónde arrancar.</p>
+    </div>
+
+    <div class="refuge__cards">
+      <a class="refuge-card refuge-card--nectar" href={url('/nectariferas/')} data-reveal data-parallax-scene>
+        <div class="refuge-card__art">
+          <div class="refuge-card__layer" data-parallax="0.1"><PlantArt id="salvia-azul" /></div>
+        </div>
+        <div class="refuge-card__body">
+          <span class="chip chip--orange">Generales</span>
+          <h3>Plantas nectaríferas para polinizadores</h3>
+          <p>El bar abierto del barrio. Sus flores alimentan a colibríes, abejas, abejorros y mariposas adultas.</p>
+          <ul class="refuge-card__icons" aria-label="Alimentan a colibríes, mariposas, abejas y abejorros">
+            <li><PollinatorIcon id="hummingbirds" /></li>
+            <li><PollinatorIcon id="butterflies" /></li>
+            <li><PollinatorIcon id="bees" /></li>
+            <li><PollinatorIcon id="bumblebees" /></li>
+          </ul>
+          <span class="refuge-card__cta">Ver las 10 nectaríferas <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+
+      <a class="refuge-card refuge-card--host" href={url('/mariposas/')} data-reveal data-reveal-delay="0.1" data-parallax-scene>
+        <div class="refuge-card__art">
+          <div class="refuge-card__layer" data-parallax="0.1"><PlantArt id="mburucuya" /></div>
+          <ButterflyArt id="espejito" uid="card" class="refuge-card__butterfly" />
+        </div>
+        <div class="refuge-card__body">
+          <span class="chip">Específicas</span>
+          <h3>Plantas nutricias para mariposas</h3>
+          <p>La guardería. Cada mariposa nativa cría a sus orugas en una planta puntual: conocé las diez parejas de la ciudad.</p>
+          <span class="refuge-card__cta">Ver las 10 mariposas y sus plantas <span aria-hidden="true">→</span></span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .refuge {
+    padding-block: clamp(5rem, 11vw, 10rem);
+    background: var(--butter);
+  }
+
+  .refuge__intro {
+    max-width: 56rem;
+    margin: 0 auto clamp(2.5rem, 6vw, 5rem);
+    text-align: center;
+  }
+
+  .refuge__intro h2 {
+    margin-block: 0.3em 0.5em;
+    color: var(--green-900);
+  }
+
+  .refuge__intro .lead {
+    max-width: 50ch;
+    margin-inline: auto;
+  }
+
+  .refuge__cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    gap: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
+  .refuge-card {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    overflow: hidden;
+    border-radius: calc(var(--radius) * 1.4);
+    text-decoration: none;
+    box-shadow: var(--shadow);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+  }
+
+  .refuge-card:hover {
+    transform: translateY(-0.5rem);
+    box-shadow: 0 2.2rem 3.5rem -1.5rem rgb(43 33 24 / 0.45);
+  }
+
+  .refuge-card--nectar {
+    background: var(--orange-500);
+    color: var(--ink);
+  }
+
+  .refuge-card--host {
+    background: var(--green-700);
+    color: var(--butter-light);
+  }
+
+  .refuge-card__art {
+    position: relative;
+    height: clamp(15rem, 34vw, 24rem);
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 78%, rgb(255 243 196 / 0.55) 0 38%, transparent 39%);
+  }
+
+  .refuge-card__layer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: 100%;
+    padding-top: 2.5rem;
+  }
+
+  .refuge-card__layer :global(.plant-art) {
+    height: 100%;
+    width: auto;
+  }
+
+  .refuge-card__art :global(.refuge-card__butterfly) {
+    position: absolute;
+    top: 12%;
+    right: 10%;
+    width: 34%;
+    rotate: 18deg;
+    transition: rotate 0.6s, translate 0.6s;
+  }
+
+  .refuge-card:hover :global(.refuge-card__butterfly) {
+    rotate: 6deg;
+    translate: -0.5rem -0.5rem;
+  }
+
+  .refuge-card__body {
+    display: grid;
+    align-content: start;
+    justify-items: start;
+    gap: 0.8rem;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    background: rgb(255 250 230 / 0.12);
+  }
+
+  .refuge-card__icons {
+    display: flex;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .refuge-card__icons li {
+    width: 2.6rem;
+    padding: 0.35rem;
+    border-radius: 50%;
+    background: var(--butter-light);
+  }
+
+  .refuge-card__cta {
+    margin-top: 0.4rem;
+    font: 700 1rem var(--font-sans);
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
+  }
+</style>

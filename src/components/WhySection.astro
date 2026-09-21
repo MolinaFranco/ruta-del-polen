@@ -1,0 +1,104 @@
+---
+import ButterflyArt from './ButterflyArt.astro';
+import PlantArt from './PlantArt.astro';
+---
+
+<section class="why">
+  <div class="container why__list">
+    <article class="why__item" data-parallax-scene>
+      <div class="why__text" data-reveal>
+        <p class="why__figure">80%</p>
+        <h2>de la flora nativa depende de un polinizador para reproducirse.</h2>
+        <p class="lead">Sin abejas, abejorros, colibríes ni mariposas, la planta deja de dar frutos y se corta la cadena que alimenta a aves, insectos y pequeños mamíferos.</p>
+      </div>
+      <div class="why__art" data-parallax="0.35"><PlantArt id="lantana" /></div>
+    </article>
+
+    <article class="why__item why__item--reverse" data-parallax-scene>
+      <div class="why__text" data-reveal>
+        <p class="why__figure">1 a 1</p>
+        <h2>Cada mariposa pone sus huevos en una sola planta.</h2>
+        <p class="lead">Se llama planta nutricia. La mariposa la reconoce con el órgano del gusto que tiene en las patas. Si esa planta desaparece del barrio, esa mariposa también.</p>
+      </div>
+      <div class="why__art why__art--butterfly" data-parallax="-0.3"><ButterflyArt id="espejito" uid="why" /></div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .why {
+    position: relative;
+    z-index: 3;
+    padding-block: clamp(5rem, 12vw, 11rem);
+    background: var(--green-900);
+    color: var(--butter);
+  }
+
+  .why__list {
+    display: grid;
+    gap: clamp(6rem, 14vw, 13rem);
+  }
+
+  .why__item {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 6vw, 6rem);
+  }
+
+  .why__item--reverse .why__text {
+    order: 2;
+  }
+
+  .why__figure {
+    font-size: clamp(4.5rem, 2rem + 12vw, 13rem);
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.03em;
+    color: var(--orange-500);
+  }
+
+  .why__text h2 {
+    margin-block: 0.4em 0.6em;
+    font-size: clamp(1.8rem, 1.1rem + 2.6vw, 3.4rem);
+  }
+
+  .why__text .lead {
+    max-width: 44ch;
+    color: var(--green-100);
+  }
+
+  .why__art {
+    padding: 8%;
+    border-radius: 50%;
+    background: var(--green-700);
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+  }
+
+  .why__art--butterfly {
+    background: var(--butter);
+    rotate: -8deg;
+  }
+
+  .why__art :global(svg) {
+    width: 100%;
+    max-height: 100%;
+  }
+
+  @media (max-width: 48rem) {
+    .why__item {
+      grid-template-columns: 1fr;
+    }
+
+    .why__item--reverse .why__text {
+      order: 0;
+    }
+
+    .why__art {
+      width: min(70%, 18rem);
+      margin-inline: auto;
+    }
+  }
+</style>

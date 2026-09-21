@@ -1,0 +1,87 @@
+---
+import { url } from '../utils/url';
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <div>
+      <p class="site-footer__title">La ruta del polen</p>
+      <p>Córdoba, un solo corredor biológico. Red de mini-ecosistemas domésticos para polinizadores nativos.</p>
+    </div>
+    <div>
+      <p class="site-footer__label">Proyecto</p>
+      <p>
+        Diseño gráfico: Dulce Ledesma, junto a Brezzo, Morales y Quiroz.<br />
+        Cátedra de Ética, Licenciatura en Diseño Gráfico, Universidad Blas Pascal. ODS 15, Vida de ecosistemas terrestres.
+      </p>
+      <p>Desarrollo web: Franco Molina.</p>
+    </div>
+    <nav aria-label="Pie de página">
+      <p class="site-footer__label">Explorar</p>
+      <ul>
+        <li><a href={url('/mariposas/')}>Plantas nutricias para mariposas</a></li>
+        <li><a href={url('/nectariferas/')}>Plantas nectaríferas</a></li>
+        <li><a href={url('/#semillas')}>Retirá tus semillas</a></li>
+      </ul>
+    </nav>
+  </div>
+  <p class="container site-footer__note">
+    Proyecto académico sin fines de lucro. La información de cultivo es orientativa: cada balcón y cada patio son distintos.
+  </p>
+</footer>
+
+<style>
+  .site-footer {
+    padding-block: clamp(3rem, 6vw, 5rem) 2rem;
+    background: var(--green-900);
+    color: var(--green-100);
+    font-size: 0.95rem;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 2.5rem;
+  }
+
+  .site-footer__grid p + p {
+    margin-top: 0.75rem;
+  }
+
+  .site-footer__title {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--butter);
+  }
+
+  .site-footer__label {
+    font: 700 0.8rem var(--font-sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--orange-300);
+  }
+
+  .site-footer ul {
+    margin: 0.75rem 0 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .site-footer a {
+    text-underline-offset: 0.2em;
+  }
+
+  .site-footer a:hover {
+    color: var(--butter);
+  }
+
+  .site-footer__note {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgb(220 235 185 / 0.2);
+    font-size: 0.85rem;
+    opacity: 0.8;
+  }
+</style>

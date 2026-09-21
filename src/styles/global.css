@@ -1,0 +1,183 @@
+@import '@fontsource-variable/alegreya';
+@import '@fontsource-variable/alegreya/wght-italic.css';
+@import '@fontsource/alegreya-sans/500.css';
+@import '@fontsource/alegreya-sans/700.css';
+
+:root {
+  /* Paleta: verdes, naranjas y amarillo manteca */
+  --butter: #fff3c4;
+  --butter-light: #fffae6;
+  --butter-deep: #f7e3a1;
+  --green-900: #173a22;
+  --green-700: #2c5e33;
+  --green-500: #4f8a3c;
+  --green-300: #9cc76b;
+  --green-100: #dcebb9;
+  --orange-600: #d9601a;
+  --orange-500: #f28c28;
+  --orange-300: #f9b872;
+  --ink: #2b2118;
+  --ink-soft: #5c4c3c;
+  --terracotta: #c8683c;
+
+  --font-serif: 'Alegreya Variable', 'Alegreya', Georgia, serif;
+  --font-sans: 'Alegreya Sans', 'Alegreya Variable', system-ui, sans-serif;
+
+  --radius: 1.5rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --content: 72rem;
+  --shadow: 0 1.2rem 2.5rem -1.2rem rgb(43 33 24 / 0.35);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Deja lugar para el encabezado fijo al saltar a un ancla (#refugio, #semillas). */
+  scroll-padding-top: 4rem;
+}
+
+body {
+  margin: 0;
+  background: var(--butter);
+  color: var(--ink);
+  font-family: var(--font-serif);
+  font-size: clamp(1.05rem, 0.98rem + 0.35vw, 1.3rem);
+  line-height: 1.55;
+  overflow-x: hidden;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(2.9rem, 1.6rem + 6.5vw, 8rem);
+}
+
+h2 {
+  font-size: clamp(2.1rem, 1.3rem + 3.6vw, 4.6rem);
+}
+
+h3 {
+  font-size: clamp(1.4rem, 1.15rem + 1vw, 2rem);
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+}
+
+em {
+  font-style: italic;
+}
+
+:focus-visible {
+  outline: 3px solid var(--orange-600);
+  outline-offset: 3px;
+  border-radius: 0.4rem;
+}
+
+.container {
+  width: min(100% - 2 * var(--gutter), var(--content));
+  margin-inline: auto;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  font-size: 0.8em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--orange-600);
+}
+
+.lead {
+  font-size: 1.2em;
+  line-height: 1.45;
+  color: var(--ink-soft);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.75em 1.4em;
+  border: 0;
+  border-radius: 999px;
+  background: var(--green-700);
+  color: var(--butter-light);
+  font: 700 1rem var(--font-sans);
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.25s, transform 0.25s;
+}
+
+.button:hover {
+  background: var(--green-900);
+  transform: translateY(-2px);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--green-900);
+  box-shadow: inset 0 0 0 2px var(--green-700);
+}
+
+.button--ghost:hover {
+  background: var(--green-100);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.3em 0.85em;
+  border-radius: 999px;
+  background: var(--green-100);
+  color: var(--green-900);
+  font: 700 0.85rem var(--font-sans);
+  letter-spacing: 0.02em;
+}
+
+.chip--orange {
+  background: #fde0bd;
+  color: #7a3208;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Estado inicial de los elementos que se revelan con el scroll.
+   Solo se oculta si hay JS y el usuario no pidió reducir movimiento. */
+.js-motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(2.5rem);
+}

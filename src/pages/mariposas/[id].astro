@@ -1,0 +1,260 @@
+---
+import Base from '../../layouts/Base.astro';
+import ButterflyArt from '../../components/ButterflyArt.astro';
+import PlantArt from '../../components/PlantArt.astro';
+import PlantSheet from '../../components/PlantSheet.astro';
+import PagerNav from '../../components/PagerNav.astro';
+import { butterflies } from '../../data/butterflies';
+import { getPlant } from '../../data/plants';
+import { url } from '../../utils/url';
+
+export function getStaticPaths() {
+  return butterflies.map((butterfly, index) => ({
+    params: { id: butterfly.id },
+    props: {
+      butterfly,
+      previous: butterflies[(index - 1 + butterflies.length) % butterflies.length],
+      next: butterflies[(index + 1) % butterflies.length],
+    },
+  }));
+}
+
+const { butterfly, previous, next } = Astro.props;
+const hostPlant = getPlant(butterfly.hostPlantId);
+const nectarFavorites = butterfly.favoriteNectarIds.map(getPlant);
+---
+
+<Base
+  title={`${butterfly.commonName} y su planta, ${hostPlant.commonName.toLowerCase()}`}
+  description={`${butterfly.commonName} (${butterfly.scientificName}): cómo reconocerla y cómo cultivar ${hostPlant.commonName.toLowerCase()}, su planta nutricia, en jardín o en balcón.`}
+>
+  <header class="species" data-parallax-scene>
+    <div class="container species__layout">
+      <div class="species__text">
+        <a class="species__back" href={url('/mariposas/')}><span aria-hidden="true">←</span> Todas las mariposas</a>
+        <h1>{butterfly.commonName}</h1>
+        <p class="species__latin"><em>{butterfly.scientificName}</em> · {butterfly.family}</p>
+        <p class="lead species__summary">{butterfly.summary}</p>
+        <dl class="species__facts">
+          <div><dt>Envergadura</dt><dd>{butterfly.wingspan}</dd></div>
+          <div><dt>Cuándo vuela</dt><dd>{butterfly.season}</dd></div>
+        </dl>
+      </div>
+      <div class="species__art" data-parallax="-0.35">
+        <ButterflyArt id={butterfly.id} uid="hero" label={`Ilustración de la mariposa ${butterfly.commonName}`} />
+      </div>
+    </div>
+  </header>
+
+  <section class="about">
+    <div class="container about__grid">
+      <article data-reveal>
+        <h2>Cómo reconocerla</h2>
+        <p>{butterfly.appearance}</p>
+      </article>
+      <article data-reveal data-reveal-delay="0.1">
+        <h2>Su oruga</h2>
+        <p>{butterfly.caterpillar}</p>
+      </article>
+      <article data-reveal data-reveal-delay="0.2">
+        <h2>Cómo se comporta</h2>
+        <p>{butterfly.behavior}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="host">
+    <div class="container">
+      <p class="host__lead" data-reveal>Para que la {butterfly.commonName} críe en tu casa, necesitás esta planta:</p>
+      <PlantSheet plant={hostPlant} />
+      <p class="host__others"><strong>También cría en:</strong> {butterfly.otherHostPlants}</p>
+    </div>
+  </section>
+
+  <section class="nectar">
+    <div class="container">
+      <h2 data-reveal>Y de adulta, liba en estas flores</h2>
+      <ul class="nectar__list">
+        {
+          nectarFavorites.map((plant) => (
+            <li data-reveal>
+              <a href={url(`/nectariferas/${plant.id}/`)}>
+                <PlantArt id={plant.id} />
+                <span>{plant.commonName}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <PagerNav
+    previous={{ href: url(`/mariposas/${previous.id}/`), label: previous.commonName }}
+    next={{ href: url(`/mariposas/${next.id}/`), label: next.commonName }}
+  />
+</Base>
+
+<style>
+  .species {
+    overflow: hidden;
+    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem);
+    background: linear-gradient(180deg, var(--butter) 0%, #ffe9a6 100%);
+  }
+
+  .species__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 5vw, 5rem);
+  }
+
+  .species__back {
+    font: 700 0.95rem var(--font-sans);
+    color: var(--green-700);
+    text-decoration: none;
+  }
+
+  .species__back:hover {
+    text-decoration: underline;
+  }
+
+  .species h1 {
+    margin-top: 0.4em;
+    font-size: clamp(2.8rem, 1.5rem + 6vw, 7rem);
+    color: var(--green-900);
+  }
+
+  .species__latin {
+    margin-top: 0.5rem;
+    font-size: 1.15em;
+    color: var(--ink-soft);
+  }
+
+  .species__summary {
+    max-width: 34ch;
+    margin-top: 1.25rem;
+    color: var(--ink);
+  }
+
+  .species__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 2.5rem;
+    margin: 2rem 0 0;
+  }
+
+  .species__facts dt {
+    font: 700 0.78rem var(--font-sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange-600);
+  }
+
+  .species__facts dd {
+    margin: 0.15rem 0 0;
+    font-weight: 700;
+  }
+
+  .species__art {
+    rotate: -9deg;
+    filter: drop-shadow(0 2.5rem 1.5rem rgb(43 33 24 / 0.22));
+  }
+
+  .species__art :global(svg) {
+    width: 100%;
+  }
+
+  .about {
+    padding-block: clamp(3.5rem, 8vw, 7rem);
+    background: var(--green-900);
+    color: var(--butter);
+  }
+
+  .about__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: clamp(2rem, 4vw, 4rem);
+  }
+
+  .about h2 {
+    margin-bottom: 0.6em;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    color: var(--orange-300);
+  }
+
+  .about p {
+    color: var(--green-100);
+  }
+
+  .host {
+    padding-block: clamp(4rem, 9vw, 8rem);
+  }
+
+  .host__lead {
+    max-width: 30ch;
+    margin: 0 auto clamp(2.5rem, 6vw, 5rem);
+    font-size: clamp(1.5rem, 1.1rem + 1.8vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--green-900);
+  }
+
+  .host__others {
+    max-width: 60ch;
+    margin: 2.5rem 0 0 auto;
+    color: var(--ink-soft);
+  }
+
+  .nectar {
+    padding-block: clamp(3.5rem, 8vw, 7rem);
+    background: var(--green-100);
+  }
+
+  .nectar h2 {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    font-size: clamp(1.8rem, 1.2rem + 2.2vw, 3rem);
+    text-align: center;
+    color: var(--green-900);
+  }
+
+  .nectar__list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(0.75rem, 2vw, 2rem);
+    max-width: 52rem;
+    margin: 0 auto;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nectar__list a {
+    display: grid;
+    gap: 0.5rem;
+    padding: clamp(0.75rem, 2vw, 1.5rem);
+    border-radius: var(--radius);
+    background: var(--butter-light);
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    color: var(--green-900);
+    transition: transform 0.3s;
+  }
+
+  .nectar__list a:hover {
+    transform: translateY(-0.3rem);
+  }
+
+  @media (max-width: 48rem) {
+    .species__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .species__art {
+      order: -1;
+      width: min(80%, 22rem);
+      margin-inline: auto;
+    }
+  }
+</style>

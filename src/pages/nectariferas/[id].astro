@@ -1,0 +1,55 @@
+---
+import Base from '../../layouts/Base.astro';
+import PlantSheet from '../../components/PlantSheet.astro';
+import PagerNav from '../../components/PagerNav.astro';
+import { nectarPlants } from '../../data/plants';
+import { url } from '../../utils/url';
+
+export function getStaticPaths() {
+  return nectarPlants.map((plant, index) => ({
+    params: { id: plant.id },
+    props: {
+      plant,
+      previous: nectarPlants[(index - 1 + nectarPlants.length) % nectarPlants.length],
+      next: nectarPlants[(index + 1) % nectarPlants.length],
+    },
+  }));
+}
+
+const { plant, previous, next } = Astro.props;
+---
+
+<Base
+  title={plant.commonName}
+  description={`${plant.commonName} (${plant.scientificName}): a qué polinizadores alimenta y cómo cultivarla en jardín o en maceta para el balcón.`}
+>
+  <section class="plant-page">
+    <div class="container">
+      <a class="plant-page__back" href={url('/nectariferas/')}><span aria-hidden="true">←</span> Todas las nectaríferas</a>
+      <PlantSheet plant={plant} headingLevel="h1" />
+    </div>
+  </section>
+
+  <PagerNav
+    previous={{ href: url(`/nectariferas/${previous.id}/`), label: previous.commonName }}
+    next={{ href: url(`/nectariferas/${next.id}/`), label: next.commonName }}
+  />
+</Base>
+
+<style>
+  .plant-page {
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(4rem, 9vw, 8rem);
+  }
+
+  .plant-page__back {
+    display: inline-block;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+    font: 700 0.95rem var(--font-sans);
+    color: var(--green-700);
+    text-decoration: none;
+  }
+
+  .plant-page__back:hover {
+    text-decoration: underline;
+  }
+</style>

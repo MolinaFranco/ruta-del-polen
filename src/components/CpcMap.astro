@@ -1,0 +1,279 @@
+---
+import { cpcs } from '../data/cpcs';
+---
+
+<section class="seeds" id="semillas">
+  <div class="container">
+    <div class="seeds__intro" data-reveal>
+      <p class="eyebrow">Banco de semillas</p>
+      <h2>Retirá tus semillas en el CPC más cercano</h2>
+      <p class="lead">
+        Los sobres de semillas nativas y los folletos se entregan sin costo en los Centros de Participación Comunal. Buscá el tuyo en el mapa.
+      </p>
+      <div class="seeds__actions">
+        <button class="button" type="button" data-locate>Usar mi ubicación</button>
+        <p class="seeds__status" data-locate-status role="status"></p>
+      </div>
+    </div>
+
+    <div class="seeds__layout" data-reveal>
+      <div class="seeds__map" data-map data-cpcs={JSON.stringify(cpcs)} role="application" aria-label="Mapa de los CPC de la ciudad de Córdoba"></div>
+      <ol class="seeds__list">
+        {
+          cpcs.map((cpc) => (
+            <li>
+              <button type="button" data-cpc={cpc.id}>
+                <strong>{cpc.name}</strong>
+                <span>{cpc.address}</span>
+                <span class="seeds__zone">Zona {cpc.zone.toLowerCase()}</span>
+              </button>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <p class="seeds__note">
+      Consultá días y horarios de atención en <a href="https://cordoba.gob.ar/cpc/" target="_blank" rel="noopener">cordoba.gob.ar/cpc</a>. También podés conseguir plantines a precio accesible en viveros aliados y ferias agroecológicas.
+    </p>
+  </div>
+</section>
+
+<script>
+  import type { Map as LeafletMap, Marker } from 'leaflet';
+  import type { Cpc } from '../data/cpcs';
+
+  const mapElement = document.querySelector<HTMLElement>('[data-map]');
+
+  // Distancia aproximada en km entre dos puntos (fórmula del haversine).
+  function distanceKm(latA: number, lngA: number, latB: number, lngB: number) {
+    const toRad = (deg: number) => (deg * Math.PI) / 180;
+    const dLat = toRad(latB - latA);
+    const dLng = toRad(lngB - lngA);
+    const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(latA)) * Math.cos(toRad(latB)) * Math.sin(dLng / 2) ** 2;
+    return 6371 * 2 * Math.asin(Math.sqrt(h));
+  }
+
+  async function setUpMap(element: HTMLElement) {
+    const L = (await import('leaflet')).default;
+    await import('leaflet/dist/leaflet.css');
+
+    const cpcs: Cpc[] = JSON.parse(element.dataset.cpcs ?? '[]');
+    const map: LeafletMap = L.map(element, { scrollWheelZoom: false }).setView([-31.405, -64.19], 11);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+
+    const pin = L.divIcon({
+      className: 'cpc-pin',
+      html: '<svg viewBox="0 0 32 42" aria-hidden="true"><path d="M16,41 C6,27 1,21 1,14 A15,15 0 0 1 31,14 C31,21 26,27 16,41 Z" fill="#d9601a" stroke="#fff6dc" stroke-width="2"/><path d="M16,23 C10,19 9,12 16,6 C23,12 22,19 16,23 Z" fill="#fff3c4"/></svg>',
+      iconSize: [32, 42],
+      iconAnchor: [16, 41],
+      popupAnchor: [0, -38],
+    });
+
+    const markers = new Map<string, Marker>();
+    cpcs.forEach((cpc) => {
+      const directions = `https://www.google.com/maps/dir/?api=1&destination=${cpc.lat},${cpc.lng}`;
+      const marker = L.marker([cpc.lat, cpc.lng], { icon: pin, title: cpc.name })
+        .addTo(map)
+        .bindPopup(`<strong>${cpc.name}</strong><br>${cpc.address}<br><a href="${directions}" target="_blank" rel="noopener">Cómo llegar</a>`);
+      markers.set(cpc.id, marker);
+    });
+
+    const focusCpc = (id: string) => {
+      const marker = markers.get(id);
+      if (!marker) return;
+      map.flyTo(marker.getLatLng(), 14, { duration: 0.8 });
+      marker.openPopup();
+      document.querySelectorAll('[data-cpc]').forEach((button) => button.toggleAttribute('data-active', button.getAttribute('data-cpc') === id));
+    };
+
+    document.querySelectorAll<HTMLButtonElement>('[data-cpc]').forEach((button) => {
+      button.addEventListener('click', () => {
+        focusCpc(button.dataset.cpc!);
+        if (window.matchMedia('(max-width: 56rem)').matches) element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+    });
+
+    const status = document.querySelector<HTMLElement>('[data-locate-status]')!;
+    document.querySelector<HTMLButtonElement>('[data-locate]')?.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        status.textContent = 'Tu navegador no permite compartir la ubicación.';
+        return;
+      }
+      status.textContent = 'Buscando tu ubicación…';
+      navigator.geolocation.getCurrentPosition(
+        ({ coords }) => {
+          const nearest = cpcs
+            .map((cpc) => ({ cpc, km: distanceKm(coords.latitude, coords.longitude, cpc.lat, cpc.lng) }))
+            .sort((a, b) => a.km - b.km)[0];
+          L.circleMarker([coords.latitude, coords.longitude], { radius: 8, color: '#fff6dc', weight: 3, fillColor: '#2c5e33', fillOpacity: 1 }).addTo(map);
+          status.textContent = `Tu CPC más cercano es ${nearest.cpc.name}, a ${nearest.km.toFixed(1).replace('.', ',')} km.`;
+          focusCpc(nearest.cpc.id);
+        },
+        () => (status.textContent = 'No pudimos obtener tu ubicación. Elegí tu CPC en la lista.'),
+        { enableHighAccuracy: false, timeout: 10000 },
+      );
+    });
+  }
+
+  // El mapa (y Leaflet) se cargan recién cuando la sección está por entrar en pantalla.
+  if (mapElement) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        observer.disconnect();
+        setUpMap(mapElement);
+      },
+      { rootMargin: '600px' },
+    );
+    observer.observe(mapElement);
+  }
+</script>
+
+<style>
+  .seeds {
+    padding-block: clamp(5rem, 11vw, 10rem);
+    background: var(--butter-light);
+  }
+
+  .seeds__intro {
+    max-width: 56rem;
+    margin: 0 auto clamp(2rem, 5vw, 4rem);
+    text-align: center;
+  }
+
+  .seeds__intro h2 {
+    margin-block: 0.3em 0.5em;
+    color: var(--green-900);
+  }
+
+  .seeds__intro .lead {
+    max-width: 52ch;
+    margin-inline: auto;
+  }
+
+  .seeds__actions {
+    display: grid;
+    justify-items: center;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .seeds__status {
+    min-height: 1.5em;
+    font: 500 1rem var(--font-sans);
+    color: var(--green-700);
+  }
+
+  .seeds__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.7fr) minmax(16rem, 1fr);
+    gap: 1.25rem;
+    height: clamp(26rem, 60vh, 38rem);
+  }
+
+  .seeds__map {
+    z-index: 0;
+    height: 100%;
+    border-radius: var(--radius);
+    background: var(--green-100);
+    box-shadow: var(--shadow);
+    font-family: var(--font-sans);
+  }
+
+  .seeds__list {
+    display: grid;
+    align-content: start;
+    gap: 0.5rem;
+    height: 100%;
+    margin: 0;
+    padding: 0 0.4rem 0 0;
+    overflow-y: auto;
+    list-style: none;
+    overscroll-behavior: contain;
+  }
+
+  .seeds__list button {
+    display: grid;
+    gap: 0.1rem;
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 1rem;
+    background: var(--butter);
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.95rem;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .seeds__list button:hover {
+    background: var(--butter-deep);
+  }
+
+  .seeds__list button[data-active] {
+    border-color: var(--orange-500);
+    background: #fde0bd;
+  }
+
+  .seeds__list span {
+    color: var(--ink-soft);
+  }
+
+  .seeds__zone {
+    font: 700 0.75rem var(--font-sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .seeds__note {
+    max-width: 60ch;
+    margin: 2rem auto 0;
+    font-size: 0.95rem;
+    text-align: center;
+    color: var(--ink-soft);
+  }
+
+  /* El mapa base se entibia un poco para que acompañe la paleta del sitio. */
+  .seeds :global(.leaflet-tile-pane) {
+    filter: sepia(0.22) saturate(0.85);
+  }
+
+  .seeds :global(.cpc-pin) {
+    background: none;
+    border: 0;
+    filter: drop-shadow(0 3px 3px rgb(43 33 24 / 0.35));
+  }
+
+  .seeds :global(.leaflet-popup-content) {
+    font: 500 0.95rem/1.4 var(--font-sans);
+  }
+
+  .seeds :global(.leaflet-popup-content a) {
+    color: var(--orange-600);
+    font-weight: 700;
+  }
+
+  @media (max-width: 56rem) {
+    .seeds__layout {
+      grid-template-columns: 1fr;
+      height: auto;
+    }
+
+    .seeds__map {
+      height: 24rem;
+    }
+
+    .seeds__list {
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr));
+      height: auto;
+      max-height: none;
+      overflow: visible;
+      padding: 0;
+    }
+  }
+</style>
