@@ -6,7 +6,7 @@ Landing page a la que se llega escaneando el QR de los tótems del proyecto. Inv
 
 ## Sobre el proyecto
 
-*La ruta del polen* es un proyecto de diseño gráfico de **Dulce Ledesma** (junto a Brezzo, Morales y Quiroz) para la cátedra de **Ética** de la Licenciatura en Diseño Gráfico de la **Universidad Blas Pascal** (Práctico n.º 3: aplicación de los ODS en situaciones regionales de Córdoba Capital, Prof. Lic. Sebastián Sancho Pujia).
+*La ruta del polen* es un proyecto de diseño gráfico de **Brezzo, Ledesma, Morales y Quiroz** para la cátedra de **Ética** de la Licenciatura en Diseño Gráfico de la **Universidad Blas Pascal** (Práctico n.º 3: aplicación de los ODS en situaciones regionales de Córdoba Capital, Prof. Lic. Sebastián Sancho Pujia).
 
 Trabaja el **ODS 15, Vida de ecosistemas terrestres** (metas 15.5 y 15.9): propone sumar miles de micronodos privados (macetas, canteros, jardines) con plantas nativas nutricias y nectaríferas, para que funcionen como un corredor biológico continuo entre los espacios verdes de la ciudad. El sistema gráfico incluye tótems, stickers para hogares, packaging de semillas, folletos y redes; esta web es la pieza digital que los conecta.
 

@@ -11,7 +11,7 @@ import { url } from '../utils/url';
     <div>
       <p class="site-footer__label">Proyecto</p>
       <p>
-        Diseño gráfico: Dulce Ledesma, junto a Brezzo, Morales y Quiroz.<br />
+        Diseño gráfico: Brezzo, Ledesma, Morales y Quiroz.<br />
         Cátedra de Ética, Licenciatura en Diseño Gráfico, Universidad Blas Pascal. ODS 15, Vida de ecosistemas terrestres.
       </p>
       <p>Desarrollo web: Franco Molina.</p>
@@ -62,11 +62,16 @@ import { url } from '../utils/url';
   }
 
   .site-footer ul {
-    margin: 0.75rem 0 0;
+    margin: 0.5rem 0 0;
     padding: 0;
     list-style: none;
     display: grid;
-    gap: 0.5rem;
+  }
+
+  .site-footer ul a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   .site-footer a {

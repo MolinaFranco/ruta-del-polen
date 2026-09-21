@@ -58,6 +58,8 @@ const current = Astro.url.pathname;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
+    min-height: 44px;
+    min-width: 44px;
     font-weight: 800;
     font-size: 1.15rem;
     text-decoration: none;
@@ -74,8 +76,11 @@ const current = Astro.url.pathname;
     font: 700 0.95rem var(--font-sans);
   }
 
+  /* Zonas táctiles de al menos 44 px de alto: el sitio se usa sobre todo desde el celular. */
   .site-header__links a {
-    padding-block: 0.4rem;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     text-decoration: none;
     color: var(--ink-soft);
     border-bottom: 2px solid transparent;

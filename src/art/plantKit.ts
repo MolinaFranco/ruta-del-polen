@@ -36,6 +36,20 @@ export const angleOn = ({ start, control, end }: Curve, t: number) => {
   return (Math.atan2(dy, dx) * 180) / Math.PI;
 };
 
+// Punto a `distance` unidades hacia atrás sobre la dirección del tallo en su punta.
+// Sirve para colgar flores o ramitas de un punto que realmente está sobre el tallo.
+export const backAlong = (x: number, y: number, angle: number, distance: number): Point => {
+  const rad = (angle * Math.PI) / 180;
+  return [x - Math.cos(rad) * distance, y - Math.sin(rad) * distance];
+};
+
+// Rama fina y curva entre dos puntos (pedicelos, ramitas de inflorescencias).
+export const twig = (from: Point, to: Point, width: number, color: string, bend = 0.25) => {
+  const mx = (from[0] + to[0]) / 2 - (to[1] - from[1]) * bend;
+  const my = (from[1] + to[1]) / 2 + (to[0] - from[0]) * bend;
+  return `<path d="M${n(from[0])},${n(from[1])} Q${n(mx)},${n(my)} ${n(to[0])},${n(to[1])}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`;
+};
+
 export const stem = ({ start, control, end }: Curve, width: number, color: string) =>
   `<path d="M${n(start[0])},${n(start[1])} Q${n(control[0])},${n(control[1])} ${n(end[0])},${n(end[1])}" fill="none" stroke="${color}" stroke-width="${width}" stroke-linecap="round"/>`;
 

@@ -17,6 +17,7 @@ export interface ButterflyArt {
   veins: string;
   veinWidth: number;
   body: string;
+  antennae?: string;
   forePattern: string;
   hindPattern: string;
 }
@@ -40,6 +41,11 @@ const shapes = {
   swallowtail: {
     fore: 'M3,-8 C18,-46 60,-78 104,-72 C108,-48 96,-18 64,-2 C42,6 16,6 3,0 Z',
     hind: 'M3,-2 C30,-8 64,-2 76,20 C80,28 75,32 79,39 C80,46 71,47 71,55 C67,61 60,58 55,64 C48,69 43,62 37,64 C20,60 6,32 3,4 Z',
+  },
+  // Azufrada (Phoebis): ala delantera con la punta aguda y el borde externo casi recto.
+  sulphur: {
+    fore: 'M3,-8 C16,-44 56,-70 98,-68 C96,-48 88,-22 66,-3 C44,6 16,6 3,0 Z',
+    hind: 'M3,-2 C28,-8 62,-4 75,20 C81,42 60,64 36,60 C16,56 6,30 3,4 Z',
   },
   pierid: {
     fore: 'M3,-8 C14,-44 50,-68 90,-60 C99,-44 92,-16 64,-2 C42,6 16,6 3,0 Z',
@@ -70,17 +76,27 @@ const hindMarginDots: [number, number][] = [[76, 24], [79, 35], [77, 46], [70, 5
 const ladyApex = 'M58,-72 L112,-72 L112,-30 L80,-34 C70,-40 62,-52 58,-72 Z';
 
 export const butterflyArt: Record<string, ButterflyArt> = {
+  // Hembra de Phoebis sennae: amarillo limón liso, una mancha hueca en el ala delantera
+  // y marcas negras en el borde. El macho es igual pero sin manchas.
   'limonera-grande': {
-    shape: shapes.pierid,
-    fore: '#f7d437',
-    hind: '#f9dc52',
-    margin: '#d8a31c',
-    marginWidth: 5,
-    veins: '#d8a31c',
-    veinWidth: 0.8,
-    body: '#6b5620',
-    forePattern: dot(50, -34, 3, '#a0621a') + dot(50, -34, 1.2, CREAM) + dots([[86, -50], [88, -40], [84, -30], [77, -20]], 1.6, '#a0621a'),
-    hindPattern: dot(40, 28, 2.6, '#f2a93b') + dot(46, 34, 1.8, '#f2a93b'),
+    shape: shapes.sulphur,
+    fore: '#fbe234',
+    hind: '#fde957',
+    margin: '#e2b50c',
+    marginWidth: 1.4,
+    veins: '#e9c526',
+    veinWidth: 0.6,
+    body: '#9a8a3a',
+    antennae: '#c75a6e',
+    forePattern:
+      blob(26, -20, 22, 11, -38, 'rgb(255 255 255 / 0.22)') +
+      `<rect x="44" y="-38" width="9" height="8" rx="3" fill="none" stroke="#2f2412" stroke-width="2.4" transform="rotate(-24 48.5 -34)"/>` +
+      [[96, -62, -70], [95, -52, -60], [92, -41, -50], [87, -30, -40], [80, -20, -32], [72, -11, -26]]
+        .map(([x, y, a]) => `<path d="M0,-3 L7,0 L0,3 Z" fill="#2f2412" transform="translate(${x} ${y}) rotate(${a + 180})"/>`)
+        .join(''),
+    hindPattern:
+      blob(22, 16, 20, 11, 40, 'rgb(255 255 255 / 0.22)') +
+      dots([[76, 28], [75, 40], [69, 51], [58, 59]], 1.7, '#2f2412'),
   },
   'bordes-de-oro': {
     shape: shapes.swallowtail,

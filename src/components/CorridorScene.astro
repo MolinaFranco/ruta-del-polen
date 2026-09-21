@@ -31,7 +31,7 @@ const planter = (x: number, y: number) =>
     </p>
   </div>
 
-  <div class="corridor__scene">
+  <div class="corridor__scene" data-pan>
     <svg viewBox="0 0 1200 470" aria-hidden="true">
       <defs>
         <mask id="route-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1200" height="470">
@@ -98,14 +98,26 @@ const planter = (x: number, y: number) =>
 
   .corridor__scene {
     display: flex;
-    justify-content: center;
     margin-top: clamp(2rem, 5vw, 4rem);
+    overflow: hidden;
   }
 
-  /* En pantallas angostas la escena no se achica del todo: se recorta por los costados. */
+  /* En pantallas angostas la escena no se achica del todo: queda más ancha que la pantalla
+     y se desplaza con el scroll (data-pan). Sin animaciones, se ve centrada y recortada. */
   .corridor__scene svg {
     flex: none;
     width: max(100%, 46rem);
     max-width: 90rem;
+    margin-inline: auto;
+  }
+
+  :global(.js-motion) .corridor__scene svg {
+    margin-inline: 0 auto;
+  }
+
+  @media (min-width: 46rem) {
+    :global(.js-motion) .corridor__scene svg {
+      margin-inline: auto;
+    }
   }
 </style>

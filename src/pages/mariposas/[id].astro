@@ -29,9 +29,11 @@ const nectarFavorites = butterfly.favoriteNectarIds.map(getPlant);
   description={`${butterfly.commonName} (${butterfly.scientificName}): cómo reconocerla y cómo cultivar ${hostPlant.commonName.toLowerCase()}, su planta nutricia, en jardín o en balcón.`}
 >
   <header class="species" data-parallax-scene>
+    <div class="container">
+      <a class="species__back" href={url('/mariposas/')}><span aria-hidden="true">←</span> Todas las mariposas</a>
+    </div>
     <div class="container species__layout">
       <div class="species__text">
-        <a class="species__back" href={url('/mariposas/')}><span aria-hidden="true">←</span> Todas las mariposas</a>
         <h1>{butterfly.commonName}</h1>
         <p class="species__latin"><em>{butterfly.scientificName}</em> · {butterfly.family}</p>
         <p class="lead species__summary">{butterfly.summary}</p>
@@ -98,7 +100,7 @@ const nectarFavorites = butterfly.favoriteNectarIds.map(getPlant);
 <style>
   .species {
     overflow: hidden;
-    padding-block: clamp(2.5rem, 6vw, 5rem) clamp(3rem, 7vw, 6rem);
+    padding-block: clamp(1rem, 3vw, 2.5rem) clamp(3rem, 7vw, 6rem);
     background: linear-gradient(180deg, var(--butter) 0%, #ffe9a6 100%);
   }
 
@@ -110,6 +112,9 @@ const nectarFavorites = butterfly.favoriteNectarIds.map(getPlant);
   }
 
   .species__back {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     font: 700 0.95rem var(--font-sans);
     color: var(--green-700);
     text-decoration: none;
@@ -120,7 +125,6 @@ const nectarFavorites = butterfly.favoriteNectarIds.map(getPlant);
   }
 
   .species h1 {
-    margin-top: 0.4em;
     font-size: clamp(2.8rem, 1.5rem + 6vw, 7rem);
     color: var(--green-900);
   }

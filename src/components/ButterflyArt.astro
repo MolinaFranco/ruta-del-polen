@@ -40,13 +40,15 @@ const key = `${id}-${uid}`;
     </g>
   </defs>
 
-  <g class="butterfly__wing butterfly__wing--right"><use href={`#wings-${key}`}></use></g>
-  <g class="butterfly__wing butterfly__wing--left"><use href={`#wings-${key}`} transform="scale(-1 1)"></use></g>
+  <g class="butterfly__wing butterfly__wing--right" data-wing><use href={`#wings-${key}`}></use></g>
+  <g class="butterfly__wing butterfly__wing--left" data-wing><use href={`#wings-${key}`} transform="scale(-1 1)"></use></g>
 
-  <g fill={art.body}>
-    <path d="M-1,-19 C-6,-36 -14,-46 -21,-52 M1,-19 C6,-36 14,-46 21,-52" fill="none" stroke={art.body} stroke-width="1.4" stroke-linecap="round"></path>
+  <g fill={art.antennae ?? art.body}>
+    <path d="M-1,-19 C-6,-36 -14,-46 -21,-52 M1,-19 C6,-36 14,-46 21,-52" fill="none" stroke={art.antennae ?? art.body} stroke-width="1.4" stroke-linecap="round"></path>
     <circle cx="-21" cy="-52" r="2"></circle>
     <circle cx="21" cy="-52" r="2"></circle>
+  </g>
+  <g fill={art.body}>
     <ellipse cx="0" cy="20" rx="3.4" ry="19"></ellipse>
     <ellipse cx="0" cy="-4" rx="4.6" ry="10"></ellipse>
     <circle cx="0" cy="-16" r="4.2"></circle>
@@ -56,12 +58,5 @@ const key = `${id}-${uid}`;
 <style>
   .butterfly {
     overflow: visible;
-  }
-
-  /* El aleteo se maneja con la variable --flap (0 = alas abiertas, 1 = casi cerradas). */
-  .butterfly__wing {
-    transform-box: view-box;
-    transform-origin: 50% 50%;
-    transform: scaleX(calc(1 - var(--flap, 0) * 0.8));
   }
 </style>

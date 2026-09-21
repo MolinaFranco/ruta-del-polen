@@ -16,8 +16,8 @@ import PlantArt from './PlantArt.astro';
 
     <article class="why__item why__item--reverse" data-parallax-scene>
       <div class="why__text" data-reveal>
-        <p class="why__figure">1 a 1</p>
-        <h2>Cada mariposa pone sus huevos en una sola planta.</h2>
+        <p class="why__figure">1 : 1</p>
+        <h2>Una mariposa, una planta: cada especie pone sus huevos en una sola.</h2>
         <p class="lead">Se llama planta nutricia. La mariposa la reconoce con el órgano del gusto que tiene en las patas. Si esa planta desaparece del barrio, esa mariposa también.</p>
       </div>
       <div class="why__art why__art--butterfly" data-parallax="-0.3"><ButterflyArt id="espejito" uid="why" /></div>
@@ -51,6 +51,7 @@ import PlantArt from './PlantArt.astro';
   }
 
   .why__figure {
+    font-variant-numeric: lining-nums;
     font-size: clamp(4.5rem, 2rem + 12vw, 13rem);
     font-weight: 900;
     line-height: 0.9;

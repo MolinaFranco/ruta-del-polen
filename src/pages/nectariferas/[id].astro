@@ -42,7 +42,9 @@ const { plant, previous, next } = Astro.props;
   }
 
   .plant-page__back {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
     margin-bottom: clamp(1.5rem, 4vw, 3rem);
     font: 700 0.95rem var(--font-sans);
     color: var(--green-700);
