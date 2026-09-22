@@ -1,4 +1,5 @@
 ---
+import { PLANT_VIEW_BOX, groundMarkup, potMarkup } from '../art/plantScene';
 import { drawPlant } from '../art/plantArt';
 
 interface Props {
@@ -15,25 +16,13 @@ const drawing = drawPlant(id);
 
 <svg
   class:list={['plant-art', className]}
-  viewBox="0 0 200 240"
+  viewBox={PLANT_VIEW_BOX}
   role={label ? 'img' : undefined}
   aria-label={label}
   aria-hidden={label ? undefined : 'true'}
 >
-  <g class="plant-art__ground">
-    <ellipse cx="100" cy="219" rx="84" ry="13" fill="#2c5e33"></ellipse>
-    <ellipse cx="100" cy="216" rx="70" ry="8" fill="#4f8a3c"></ellipse>
-  </g>
-  {
-    base === 'both' && (
-      <g class="plant-art__pot">
-        <path d="M58,206 L142,206 L134,240 L66,240 Z" fill="#c8683c" />
-        <path d="M100,206 L142,206 L134,240 L100,240 Z" fill="#b1562e" />
-        <rect x="52" y="198" width="96" height="12" rx="4" fill="#d97b4c" />
-        <ellipse cx="100" cy="199" rx="44" ry="4" fill="#5a3a24" />
-      </g>
-    )
-  }
+  <g class="plant-art__ground" set:html={groundMarkup} />
+  {base === 'both' && <g class="plant-art__pot" set:html={potMarkup} />}
   <g class="plant-art__plant" set:html={drawing} />
 </svg>
 

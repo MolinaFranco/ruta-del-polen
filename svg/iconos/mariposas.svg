@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- La ruta del polen. Ilustración del proyecto de Brezzo, Ledesma, Morales y Quiroz (Ética, Universidad Blas Pascal). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="96" height="96" role="img" aria-labelledby="titulo">
+  <title id="titulo">Mariposas</title>
+  <desc>Prefieren flores chicas agrupadas donde posarse a libar.</desc>
+  <path d="M24,22 C28,6 46,6 44,18 C43,26 32,28 24,25 Z" fill="#f28c28" />
+<path d="M24,22 C20,6 2,6 4,18 C5,26 16,28 24,25 Z" fill="#f28c28" />
+<path d="M24,25 C30,25 40,30 37,38 C34,43 26,38 24,29 Z" fill="#d9601a" />
+<path d="M24,25 C18,25 8,30 11,38 C14,43 22,38 24,29 Z" fill="#d9601a" />
+<ellipse cx="24" cy="25" rx="1.8" ry="10" fill="#2b2118" />
+</svg>

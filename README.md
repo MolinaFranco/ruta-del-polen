@@ -51,6 +51,16 @@ Para **editar contenido** alcanza con tocar los archivos de `src/data/`. Para **
 
 Las animaciones se declaran en el HTML con atributos: `data-reveal`, `data-parallax="0.3"`, `data-draw`, `data-grow`. Están documentados al inicio de `src/scripts/scrollMotion.ts`.
 
+## Ilustraciones sueltas (SVG)
+
+La carpeta `svg/` tiene todos los dibujos como archivos `.svg` separados, listos para Illustrator, Figma o Inkscape: las 10 mariposas, las 18 plantas en tierra, las mismas 18 en maceta y los 5 íconos de polinizadores. Se generan desde el mismo código que dibuja el sitio, así que no hay dos versiones que se desincronicen:
+
+```bash
+npm run export:svg
+```
+
+También se pueden descargar de a uno desde el sitio publicado, por ejemplo `/svg/mariposas/monarca-del-sur.svg`. Ver `svg/README.md`.
+
 ## Desarrollo
 
 Requiere Node 22 o superior.

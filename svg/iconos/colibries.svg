@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- La ruta del polen. Ilustración del proyecto de Brezzo, Ledesma, Morales y Quiroz (Ética, Universidad Blas Pascal). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="96" height="96" role="img" aria-labelledby="titulo">
+  <title id="titulo">Colibríes</title>
+  <desc>Buscan flores tubulares, rojas o azules, con mucho néctar.</desc>
+  <path d="M30,20 L46,14" stroke="#2b2118" stroke-width="1.8" stroke-linecap="round" />
+<path d="M8,40 C12,30 18,22 26,18 C30,16 33,18 32,22 C30,32 20,36 8,40 Z" fill="#2c8a6a" />
+<path d="M8,40 C16,36 26,30 32,22 C30,32 20,36 8,40 Z" fill="#1f6a50" />
+<path d="M24,22 C18,10 10,6 4,6 C8,14 14,22 22,26 Z" fill="#7fb04f" />
+<circle cx="28" cy="20" r="4.6" fill="#2c8a6a" />
+<path d="M25,23 C27,25 30,25 32,23 L30,27 Z" fill="#d8322a" />
+<circle cx="29.5" cy="19" r="1.1" fill="#2b2118" />
+</svg>
